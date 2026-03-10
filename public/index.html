@@ -76,8 +76,8 @@
   .sort-zone h4 { font-size: 0.75rem; color: #718096; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
   .sort-zone.drag-over { border-color: #4299e1; background: #ebf8ff; }
   .sort-items { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px; }
-  .sort-chip { padding: 6px 14px; border-radius: 10px; background: #ebf8ff; color: #2c5282; font-size: 0.82rem; cursor: grab; border: 1px solid #bee3f8; user-select: none; transition: all 0.2s; }
-  .sort-chip:active { cursor: grabbing; }
+  .sort-chip { padding: 6px 14px; border-radius: 10px; background: #ebf8ff; color: #2c5282; font-size: 0.82rem; cursor: pointer; border: 1px solid #bee3f8; user-select: none; transition: all 0.2s; }
+  .sort-chip.selected { border-color: #4299e1; background: #4299e1; color: white; box-shadow: 0 0 0 3px rgba(66,153,225,0.3); }
   .sort-chip.placed { opacity: 0.4; pointer-events: none; }
   .sort-chip.in-zone { cursor: pointer; }
   .sort-chip.sort-correct { background: #f0fff4; color: #276749; border-color: #9ae6b4; }
@@ -92,8 +92,25 @@
   .fix-opt.wrong { border-color: #fc8181; background: #fff5f5; }
   .fix-opt.disabled { pointer-events: none; opacity: 0.7; }
 
+  .sort-zone.highlight { border-color: #4299e1; background: #ebf8ff; }
+
+  /* Match pairs game */
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .match-col-header { font-size: 0.75rem; font-weight: 700; color: #718096; text-transform: uppercase; text-align: center; padding: 4px; }
+  .match-item { padding: 10px 12px; border-radius: 10px; border: 2px solid #e2e8f0; background: white; text-align: center; cursor: pointer; font-size: 0.82rem; transition: all 0.2s; }
+  .match-item:hover { border-color: #4299e1; }
+  .match-item.selected { border-color: #4299e1; background: #ebf8ff; box-shadow: 0 0 0 3px rgba(66,153,225,0.2); }
+  .match-item.matched { border-color: #48bb78; background: #f0fff4; color: #276749; pointer-events: none; opacity: 0.7; }
+  .match-item.wrong-flash { border-color: #fc8181; background: #fff5f5; }
+  .match-item.disabled { pointer-events: none; opacity: 0.5; }
+
+  /* Category game */
+  .cat-options { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .cat-word { font-size: 1.2rem; font-weight: 700; color: #2b6cb0; text-align: center; margin-bottom: 16px; padding: 14px; background: #ebf8ff; border-radius: 10px; }
+
   @media (max-width: 500px) {
     .sort-zones { flex-direction: column; }
+    .match-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -657,9 +674,13 @@
 <!-- PRACTICE -->
 <div id="practice" class="section">
   <div class="game-selector">
-    <button class="game-btn active" onclick="switchGame('fill')">Fill the Gap</button>
-    <button class="game-btn" onclick="switchGame('sort')">Formal or Informal?</button>
-    <button class="game-btn" onclick="switchGame('fix')">Fix the Sentence</button>
+    <button class="game-btn active" onclick="switchGame('fill',this)">Fill the Gap</button>
+    <button class="game-btn" onclick="switchGame('sort',this)">Formal or Informal?</button>
+    <button class="game-btn" onclick="switchGame('fix',this)">Fix the Sentence</button>
+    <button class="game-btn" onclick="switchGame('match',this)">Word Match</button>
+    <button class="game-btn" onclick="switchGame('category',this)">Link Category</button>
+    <button class="game-btn" onclick="switchGame('phrasal',this)">Phrasal Verbs</button>
+    <button class="game-btn" onclick="switchGame('tense',this)">Tense Pick</button>
   </div>
   <div class="game-area" id="game-area"></div>
 </div>
@@ -670,9 +691,12 @@ function show(id) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   event.target.classList.add('active');
+  if (id === 'practice') startGame();
 }
 
 /* ============ PRACTICE GAMES ============ */
+
+/* --- DATA --- */
 const FILL_DATA = [
   { sentence: "The government should take measures to reduce pollution. ___, they could invest in renewable energy.", answer: "For example", options: ["For example", "However", "Although", "Despite"] },
   { sentence: "Many people prefer city life. ___, others enjoy the peace of the countryside.", answer: "However", options: ["Therefore", "However", "Furthermore", "As a result"] },
@@ -686,6 +710,14 @@ const FILL_DATA = [
   { sentence: "The issue ___ be solved by investing more in education.", answer: "could", options: ["could", "must to", "can to", "would to"] },
   { sentence: "___ I'm concerned, this is the best solution available.", answer: "As far as", options: ["As long as", "As far as", "As well as", "As soon as"] },
   { sentence: "She failed the test ___ having studied all night.", answer: "despite", options: ["although", "despite", "because", "moreover"] },
+  { sentence: "Unemployment has risen sharply. ___, the government has introduced new policies.", answer: "Consequently", options: ["Consequently", "Furthermore", "Although", "Despite"] },
+  { sentence: "She is not only talented ___ also very hardworking.", answer: "but", options: ["and", "but", "yet", "or"] },
+  { sentence: "___ to the heavy rain, the event was cancelled.", answer: "Due", options: ["Due", "Because", "Although", "Despite"] },
+  { sentence: "I ___ living in London for three years now.", answer: "have been", options: ["am", "have been", "was", "had been"] },
+  { sentence: "By the time he arrived, she ___ already left.", answer: "had", options: ["has", "had", "was", "have"] },
+  { sentence: "It is widely ___ that education plays a vital role.", answer: "acknowledged", options: ["acknowledged", "told", "said to", "spoken"] },
+  { sentence: "The essay should be ___ four paragraphs.", answer: "divided into", options: ["divided into", "made by", "built from", "set on"] },
+  { sentence: "___ being expensive, the course was worth it.", answer: "Despite", options: ["Despite", "Although", "Because", "Since"] },
 ];
 
 const SORT_DATA = [
@@ -705,6 +737,10 @@ const SORT_DATA = [
   { word: "Gonna be there at 5!", cat: "informal" },
   { word: "Please do not hesitate to contact me.", cat: "formal" },
   { word: "Cheers!", cat: "informal" },
+  { word: "I wish to express my dissatisfaction.", cat: "formal" },
+  { word: "LOL that's hilarious!", cat: "informal" },
+  { word: "I trust this matter will be resolved.", cat: "formal" },
+  { word: "See ya!", cat: "informal" },
 ];
 
 const FIX_DATA = [
@@ -716,17 +752,96 @@ const FIX_DATA = [
   { wrong: "I am used to wake up early.", right: "I am used to waking up early.", explain: "'Be used to' is followed by -ing (gerund), not infinitive." },
   { wrong: "She told that she was hungry.", right: "She told me that she was hungry.", explain: "'Tell' always needs an object (told me/him/her). 'Say' doesn't." },
   { wrong: "This problem must to be solved.", right: "This problem must be solved.", explain: "Modal verbs (must, can, should) are followed directly by the base verb — no 'to'." },
-  { wrong: "There is less people in the village now.", right: "There are fewer people in the village now.", explain: "'Fewer' for countable nouns, 'less' for uncountable. Also 'people' is plural → 'are'." },
+  { wrong: "There is less people in the village now.", right: "There are fewer people in the village now.", explain: "'Fewer' for countable nouns, 'less' for uncountable. Also 'people' is plural." },
   { wrong: "She plays tennis since 2015.", right: "She has played tennis since 2015.", explain: "'Since' requires present perfect, not present simple." },
+  { wrong: "If I had studied more, I will be fluent now.", right: "If I had studied more, I would be fluent now.", explain: "Mixed conditional: If + past perfect, would + infinitive (not will)." },
+  { wrong: "I look forward to hear from you.", right: "I look forward to hearing from you.", explain: "'Look forward to' + -ing (gerund). The 'to' here is a preposition." },
+  { wrong: "He is very exhausted after the exam.", right: "He is absolutely exhausted after the exam.", explain: "'Exhausted' is non-gradable. Use 'absolutely/completely', not 'very'." },
+  { wrong: "The informations are very useful.", right: "The information is very useful.", explain: "'Information' is uncountable — no plural, singular verb." },
+  { wrong: "I didn't used to like coffee.", right: "I didn't use to like coffee.", explain: "After 'didn't', use the base form: 'use to' (not 'used to')." },
+];
+
+const MATCH_DATA = [
+  { informal: "big", formal: "significant" },
+  { informal: "good", formal: "beneficial" },
+  { informal: "bad", formal: "detrimental" },
+  { informal: "show", formal: "demonstrate" },
+  { informal: "get", formal: "obtain" },
+  { informal: "help", formal: "facilitate" },
+  { informal: "need", formal: "require" },
+  { informal: "use", formal: "utilise" },
+  { informal: "give", formal: "provide" },
+  { informal: "start", formal: "commence" },
+  { informal: "end", formal: "conclude" },
+  { informal: "try", formal: "attempt" },
+  { informal: "buy", formal: "purchase" },
+  { informal: "enough", formal: "sufficient" },
+  { informal: "about", formal: "regarding" },
+  { informal: "stop", formal: "cease" },
+];
+
+const CATEGORY_DATA = [
+  { word: "Furthermore", cat: "Adding", options: ["Adding", "Contrasting", "Cause", "Conclusion"] },
+  { word: "Moreover", cat: "Adding", options: ["Adding", "Result", "Time", "Contrasting"] },
+  { word: "However", cat: "Contrasting", options: ["Adding", "Contrasting", "Example", "Conclusion"] },
+  { word: "Nevertheless", cat: "Contrasting", options: ["Contrasting", "Cause", "Adding", "Time"] },
+  { word: "Consequently", cat: "Result", options: ["Contrasting", "Result", "Time", "Example"] },
+  { word: "Therefore", cat: "Result", options: ["Adding", "Cause", "Result", "Contrasting"] },
+  { word: "Due to", cat: "Cause", options: ["Cause", "Result", "Contrasting", "Conclusion"] },
+  { word: "In conclusion", cat: "Conclusion", options: ["Adding", "Time", "Conclusion", "Cause"] },
+  { word: "Subsequently", cat: "Time", options: ["Contrasting", "Time", "Adding", "Result"] },
+  { word: "For instance", cat: "Example", options: ["Contrasting", "Cause", "Example", "Time"] },
+  { word: "On the other hand", cat: "Contrasting", options: ["Adding", "Contrasting", "Cause", "Conclusion"] },
+  { word: "As a result", cat: "Result", options: ["Cause", "Time", "Result", "Example"] },
+  { word: "In addition", cat: "Adding", options: ["Adding", "Contrasting", "Result", "Conclusion"] },
+  { word: "Given that", cat: "Cause", options: ["Cause", "Result", "Time", "Example"] },
+  { word: "To sum up", cat: "Conclusion", options: ["Adding", "Conclusion", "Time", "Cause"] },
+  { word: "Meanwhile", cat: "Time", options: ["Time", "Adding", "Contrasting", "Result"] },
+  { word: "Nonetheless", cat: "Contrasting", options: ["Contrasting", "Adding", "Cause", "Time"] },
+  { word: "In other words", cat: "Reformulating", options: ["Reformulating", "Example", "Adding", "Conclusion"] },
+  { word: "All things considered", cat: "Conclusion", options: ["Contrasting", "Adding", "Conclusion", "Time"] },
+  { word: "Not to mention", cat: "Adding", options: ["Contrasting", "Adding", "Result", "Cause"] },
+];
+
+const PHRASAL_DATA = [
+  { verb: "bring up", meaning: "raise a topic", options: ["raise a topic", "start an activity", "investigate", "reject"] },
+  { verb: "carry out", meaning: "do / conduct", options: ["reject", "do / conduct", "raise a topic", "establish"] },
+  { verb: "deal with", meaning: "handle", options: ["constitute", "start an activity", "handle", "investigate"] },
+  { verb: "look into", meaning: "investigate", options: ["investigate", "handle", "reject", "establish"] },
+  { verb: "make up", meaning: "constitute", options: ["raise a topic", "do / conduct", "reject", "constitute"] },
+  { verb: "set up", meaning: "establish", options: ["investigate", "establish", "handle", "start an activity"] },
+  { verb: "take up", meaning: "start an activity", options: ["start an activity", "reject", "constitute", "raise a topic"] },
+  { verb: "turn down", meaning: "reject", options: ["handle", "establish", "investigate", "reject"] },
+  { verb: "point out", meaning: "highlight / mention", options: ["highlight / mention", "reject", "postpone", "investigate"] },
+  { verb: "put off", meaning: "postpone", options: ["constitute", "establish", "postpone", "handle"] },
+  { verb: "come up with", meaning: "think of / invent", options: ["reject", "think of / invent", "postpone", "investigate"] },
+  { verb: "go through", meaning: "experience / review", options: ["experience / review", "start", "establish", "raise a topic"] },
+  { verb: "run out of", meaning: "have no more left", options: ["postpone", "reject", "have no more left", "investigate"] },
+  { verb: "break down", meaning: "stop working / analyse", options: ["reject", "constitute", "stop working / analyse", "handle"] },
+];
+
+const TENSE_DATA = [
+  { sentence: "I ___ here for 5 years.", answer: "have lived", options: ["live", "have lived", "am living", "lived"], explain: "Present perfect with 'for' = duration up to now." },
+  { sentence: "By the time I arrived, she ___.", answer: "had left", options: ["left", "has left", "had left", "was leaving"], explain: "Past perfect: action completed before another past action." },
+  { sentence: "I ___ studying for hours when you called.", answer: "had been", options: ["was", "had been", "have been", "am"], explain: "Past perfect continuous: duration before a past event." },
+  { sentence: "This time tomorrow, I ___ on a beach.", answer: "will be lying", options: ["will lie", "will be lying", "am lying", "lie"], explain: "Future continuous: action in progress at a specific future time." },
+  { sentence: "She ___ to the gym every day when she was younger.", answer: "used to go", options: ["goes", "used to go", "is going", "has gone"], explain: "'Used to' for past habits that no longer happen." },
+  { sentence: "By next year, I ___ my degree.", answer: "will have finished", options: ["will finish", "finish", "will have finished", "have finished"], explain: "Future perfect: completed before a future point." },
+  { sentence: "Look at those clouds! It ___.", answer: "is going to rain", options: ["will rain", "is going to rain", "rains", "is raining"], explain: "'Going to' for predictions based on present evidence." },
+  { sentence: "He ___ tennis every Sunday. It's his routine.", answer: "plays", options: ["plays", "is playing", "has played", "played"], explain: "Present simple for regular habits/routines." },
+  { sentence: "I ___ my keys! I can't find them anywhere.", answer: "have lost", options: ["lost", "have lost", "lose", "was losing"], explain: "Present perfect: past action with present relevance." },
+  { sentence: "When I was a child, we ___ visit our grandparents every summer.", answer: "would", options: ["will", "would", "used", "are going to"], explain: "'Would' for repeated past actions (not states)." },
+  { sentence: "She ___ dinner when the phone rang.", answer: "was cooking", options: ["cooked", "was cooking", "has cooked", "cooks"], explain: "Past continuous: interrupted ongoing past action." },
+  { sentence: "I'm ___ to waking up early now.", answer: "used", options: ["used", "use", "using", "being used"], explain: "'Be used to' + -ing = accustomed to something." },
 ];
 
 let currentGame = 'fill';
 let gameState = {};
 
-function switchGame(type) {
+function switchGame(type, btn) {
   currentGame = type;
   document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  btn.classList.add('active');
   startGame();
 }
 
@@ -738,196 +853,144 @@ function shuffle(arr) {
 
 function startGame() {
   const area = document.getElementById('game-area');
+  if (!area) return;
   if (currentGame === 'fill') startFill(area);
   else if (currentGame === 'sort') startSort(area);
   else if (currentGame === 'fix') startFix(area);
+  else if (currentGame === 'match') startMatch(area);
+  else if (currentGame === 'category') startCategory(area);
+  else if (currentGame === 'phrasal') startPhrasal(area);
+  else if (currentGame === 'tense') startTense(area);
 }
+
+function esc(s) { return s.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
 /* ---- FILL THE GAP ---- */
 function startFill(area) {
-  const questions = shuffle(FILL_DATA).slice(0, 8);
-  gameState = { questions, idx: 0, score: 0 };
+  gameState = { questions: shuffle(FILL_DATA).slice(0, 10), idx: 0, score: 0 };
   renderFill(area);
 }
-
 function renderFill(area) {
   const { questions, idx, score } = gameState;
-  if (idx >= questions.length) {
-    renderFinalScore(area, score, questions.length);
-    return;
-  }
+  if (idx >= questions.length) { renderFinalScore(area, score, questions.length); return; }
   const q = questions[idx];
   const opts = shuffle(q.options);
-  const sentenceHTML = q.sentence.replace('___', '<span class="blank">???</span>');
   area.innerHTML = `
     <div class="game-card">
-      <div class="game-progress">
-        <div class="game-progress-bar"><div class="game-progress-fill" style="width:${(idx/questions.length)*100}%"></div></div>
-        <div class="game-progress-text">${idx+1} / ${questions.length}</div>
-      </div>
+      ${progressBar(idx, questions.length)}
       <h3>Choose the correct word to fill the gap:</h3>
-      <div class="game-sentence">${sentenceHTML}</div>
+      <div class="game-sentence">${q.sentence.replace('___', '<span class="blank">???</span>')}</div>
       <div class="game-options" id="fill-opts">
-        ${opts.map(o => `<button class="game-opt" onclick="checkFill(this, '${o.replace(/'/g, "\\'")}', '${q.answer.replace(/'/g, "\\'")}')">${o}</button>`).join('')}
+        ${opts.map(o => `<button class="game-opt" onclick="checkFill(this,'${esc(o)}','${esc(q.answer)}')">${o}</button>`).join('')}
       </div>
       <div class="game-feedback" id="fill-fb"></div>
-      <button class="game-next" id="fill-next" onclick="nextFill()">Next &rarr;</button>
+      <button class="game-next" id="fill-next" onclick="gameState.idx++;renderFill(document.getElementById('game-area'))">Next &rarr;</button>
     </div>`;
 }
-
 function checkFill(btn, chosen, answer) {
   const opts = document.querySelectorAll('#fill-opts .game-opt');
   opts.forEach(o => o.classList.add('disabled'));
   const fb = document.getElementById('fill-fb');
-  const blank = document.querySelector('.blank');
+  document.querySelector('.blank').textContent = answer;
   if (chosen === answer) {
     btn.classList.add('correct');
-    blank.textContent = answer;
-    fb.textContent = 'Correct! Well done.';
-    fb.className = 'game-feedback show ok';
+    fb.textContent = 'Correct!'; fb.className = 'game-feedback show ok';
     gameState.score++;
   } else {
     btn.classList.add('wrong');
     opts.forEach(o => { if (o.textContent === answer) o.classList.add('correct'); });
-    blank.textContent = answer;
-    fb.textContent = 'Not quite. The answer is: ' + answer;
-    fb.className = 'game-feedback show ko';
+    fb.textContent = 'The answer is: ' + answer; fb.className = 'game-feedback show ko';
   }
   document.getElementById('fill-next').classList.add('show');
 }
 
-function nextFill() {
-  gameState.idx++;
-  renderFill(document.getElementById('game-area'));
-}
-
-/* ---- SORT GAME ---- */
+/* ---- SORT GAME (mobile-friendly tap) ---- */
 function startSort(area) {
-  const items = shuffle(SORT_DATA).slice(0, 10);
-  gameState = { items, placed: {formal:[], informal:[]}, remaining: items.map((_,i)=>i), checked: false };
+  gameState = { items: shuffle(SORT_DATA).slice(0, 10), placed: {formal:[], informal:[]}, remaining: null, checked: false, selected: null };
+  gameState.remaining = gameState.items.map((_,i) => i);
   renderSort(area);
 }
-
 function renderSort(area) {
-  const { items, placed, remaining, checked } = gameState;
+  const { items, placed, remaining, checked, selected } = gameState;
   area.innerHTML = `
     <div class="game-card">
-      <h3>Drag each phrase to the correct category:</h3>
+      <h3>Tap a phrase, then tap Formal or Informal to place it:</h3>
       <div class="sort-items" id="sort-items">
         ${items.map((it, i) => {
           const isPlaced = !remaining.includes(i);
-          return `<span class="sort-chip${isPlaced?' placed':''}" draggable="true" ondragstart="dragSort(event,${i})" onclick="tapSort(${i})" data-idx="${i}">${it.word}</span>`;
+          const isSel = selected === i;
+          return `<span class="sort-chip${isPlaced?' placed':''}${isSel?' selected':''}" onclick="tapSortChip(${i})" data-idx="${i}">${it.word}</span>`;
         }).join('')}
       </div>
       <div class="sort-zones">
-        <div class="sort-zone" id="zone-formal" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropSort(event,'formal')">
+        <div class="sort-zone${selected!==null?' highlight':''}" id="zone-formal" onclick="tapSortZone('formal')">
           <h4>Formal</h4>
-          <div class="sort-dropped" id="dropped-formal">
+          <div class="sort-dropped">
             ${placed.formal.map(i => `<span class="sort-chip in-zone${checked?(items[i].cat==='formal'?' sort-correct':' sort-wrong'):''}" onclick="removeSort(${i},'formal')">${items[i].word}</span>`).join('')}
           </div>
         </div>
-        <div class="sort-zone" id="zone-informal" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropSort(event,'informal')">
+        <div class="sort-zone${selected!==null?' highlight':''}" id="zone-informal" onclick="tapSortZone('informal')">
           <h4>Informal</h4>
-          <div class="sort-dropped" id="dropped-informal">
+          <div class="sort-dropped">
             ${placed.informal.map(i => `<span class="sort-chip in-zone${checked?(items[i].cat==='informal'?' sort-correct':' sort-wrong'):''}" onclick="removeSort(${i},'informal')">${items[i].word}</span>`).join('')}
           </div>
         </div>
       </div>
-      <div id="sort-actions" style="text-align:center;margin-top:10px;">
+      <div style="text-align:center;margin-top:10px;">
         ${!checked && remaining.length === 0 ? '<button class="game-opt" style="background:#4299e1;color:white;border-color:#4299e1;font-weight:700;" onclick="checkSort()">Check Answers</button>' : ''}
-        ${checked ? '<div id="sort-result"></div><button class="game-restart" onclick="startSort(document.getElementById(\'game-area\'))">Play Again</button>' : ''}
+        ${checked ? `<div style="font-size:1.4rem;font-weight:800;color:#2b6cb0;margin-bottom:8px;">${countSortScore()} / ${items.length}</div><button class="game-restart" onclick="startSort(document.getElementById('game-area'))">Play Again</button>` : ''}
       </div>
     </div>`;
-
-  if (checked) {
-    const score = [...placed.formal, ...placed.informal].filter(i => {
-      const cat = placed.formal.includes(i) ? 'formal' : 'informal';
-      return items[i].cat === cat;
-    }).length;
-    document.getElementById('sort-result').innerHTML = `<div style="font-size:1.4rem;font-weight:800;color:#2b6cb0;margin-bottom:8px;">${score} / ${items.length}</div>`;
-  }
 }
-
-let dragIdx = null;
-let tapIdx = null;
-
-function dragSort(e, idx) { dragIdx = idx; e.dataTransfer.setData('text/plain', idx); }
-
-function dropSort(e, zone) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
-  const idx = dragIdx !== null ? dragIdx : parseInt(e.dataTransfer.getData('text/plain'));
-  placeSort(idx, zone);
+function tapSortChip(idx) {
+  if (gameState.checked || !gameState.remaining.includes(idx)) return;
+  gameState.selected = gameState.selected === idx ? null : idx;
+  renderSort(document.getElementById('game-area'));
 }
-
-function tapSort(idx) {
-  if (gameState.checked) return;
-  if (!gameState.remaining.includes(idx)) return;
-  if (tapIdx === idx) { tapIdx = null; return; }
-  tapIdx = idx;
-  // Show mini prompt: next tap on a zone places it
-  const zones = document.querySelectorAll('.sort-zone');
-  zones.forEach(z => {
-    z.style.cursor = 'pointer';
-    z.onclick = function() {
-      const zone = this.id.replace('zone-', '');
-      placeSort(idx, zone);
-      zones.forEach(zz => { zz.style.cursor = ''; zz.onclick = null; });
-      tapIdx = null;
-    };
-  });
-}
-
-function placeSort(idx, zone) {
-  if (gameState.checked) return;
+function tapSortZone(zone) {
+  if (gameState.checked || gameState.selected === null) return;
+  const idx = gameState.selected;
   if (!gameState.remaining.includes(idx)) return;
   gameState.placed[zone].push(idx);
   gameState.remaining = gameState.remaining.filter(i => i !== idx);
+  gameState.selected = null;
   renderSort(document.getElementById('game-area'));
 }
-
 function removeSort(idx, zone) {
   if (gameState.checked) return;
   gameState.placed[zone] = gameState.placed[zone].filter(i => i !== idx);
   gameState.remaining.push(idx);
   renderSort(document.getElementById('game-area'));
 }
-
-function checkSort() {
-  gameState.checked = true;
-  renderSort(document.getElementById('game-area'));
+function checkSort() { gameState.checked = true; renderSort(document.getElementById('game-area')); }
+function countSortScore() {
+  const { items, placed } = gameState;
+  return [...placed.formal, ...placed.informal].filter(i => {
+    return (placed.formal.includes(i) ? 'formal' : 'informal') === items[i].cat;
+  }).length;
 }
 
 /* ---- FIX THE SENTENCE ---- */
 function startFix(area) {
-  const questions = shuffle(FIX_DATA).slice(0, 6);
-  gameState = { questions, idx: 0, score: 0 };
+  gameState = { questions: shuffle(FIX_DATA).slice(0, 8), idx: 0, score: 0 };
   renderFix(area);
 }
-
 function renderFix(area) {
   const { questions, idx, score } = gameState;
-  if (idx >= questions.length) {
-    renderFinalScore(area, score, questions.length);
-    return;
-  }
+  if (idx >= questions.length) { renderFinalScore(area, score, questions.length); return; }
   const q = questions[idx];
   const choices = shuffle([q.right, q.wrong]);
   area.innerHTML = `
     <div class="game-card">
-      <div class="game-progress">
-        <div class="game-progress-bar"><div class="game-progress-fill" style="width:${(idx/questions.length)*100}%"></div></div>
-        <div class="game-progress-text">${idx+1} / ${questions.length}</div>
-      </div>
+      ${progressBar(idx, questions.length)}
       <h3>Which sentence is correct?</h3>
       <div class="fix-options" id="fix-opts">
-        ${choices.map(c => `<button class="fix-opt" onclick="checkFix(this, ${c===q.right})">${c}</button>`).join('')}
+        ${choices.map((c,i) => `<button class="fix-opt" onclick="checkFix(this,${c===q.right})">${c}</button>`).join('')}
       </div>
       <div class="game-feedback" id="fix-fb"></div>
-      <button class="game-next" id="fix-next" onclick="nextFix()">Next &rarr;</button>
+      <button class="game-next" id="fix-next" onclick="gameState.idx++;renderFix(document.getElementById('game-area'))">Next &rarr;</button>
     </div>`;
 }
-
 function checkFix(btn, isCorrect) {
   const opts = document.querySelectorAll('#fix-opts .fix-opt');
   opts.forEach(o => o.classList.add('disabled'));
@@ -935,44 +998,203 @@ function checkFix(btn, isCorrect) {
   const q = gameState.questions[gameState.idx];
   if (isCorrect) {
     btn.classList.add('correct');
-    fb.innerHTML = 'Correct! ' + q.explain;
-    fb.className = 'game-feedback show ok';
-    gameState.score++;
+    fb.innerHTML = 'Correct! ' + q.explain; fb.className = 'game-feedback show ok'; gameState.score++;
   } else {
     btn.classList.add('wrong');
     opts.forEach(o => { if (!o.classList.contains('wrong')) o.classList.add('correct'); });
-    fb.innerHTML = 'Not quite. ' + q.explain;
-    fb.className = 'game-feedback show ko';
+    fb.innerHTML = q.explain; fb.className = 'game-feedback show ko';
   }
   document.getElementById('fix-next').classList.add('show');
 }
 
-function nextFix() {
-  gameState.idx++;
-  renderFix(document.getElementById('game-area'));
+/* ---- WORD MATCH (informal → formal) ---- */
+function startMatch(area) {
+  const pairs = shuffle(MATCH_DATA).slice(0, 8);
+  const leftItems = pairs.map((p,i) => ({ text: p.informal, pairIdx: i, side: 'left' }));
+  const rightItems = shuffle(pairs.map((p,i) => ({ text: p.formal, pairIdx: i, side: 'right' })));
+  gameState = { pairs, left: leftItems, right: rightItems, selectedLeft: null, selectedRight: null, matched: [], score: 0 };
+  renderMatch(area);
+}
+function renderMatch(area) {
+  const { left, right, selectedLeft, selectedRight, matched } = gameState;
+  const done = matched.length === left.length;
+  if (done) { renderFinalScore(area, gameState.score, left.length); return; }
+  area.innerHTML = `
+    <div class="game-card">
+      ${progressBar(matched.length, left.length)}
+      <h3>Match each informal word with its formal equivalent:</h3>
+      <div class="match-grid">
+        <div class="match-col-header">Informal</div>
+        <div class="match-col-header">Formal</div>
+        ${left.map((l,i) => {
+          const lMatched = matched.includes(l.pairIdx);
+          const lSel = selectedLeft === i;
+          return `<div class="match-item${lMatched?' matched':''}${lSel?' selected':''}" onclick="pickMatch('left',${i})">${l.text}</div>
+                  <div class="match-item${matched.includes(right[i].pairIdx)?' matched':''}${selectedRight===i?' selected':''}" onclick="pickMatch('right',${i})">${right[i].text}</div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+function pickMatch(side, idx) {
+  const { left, right, matched } = gameState;
+  const item = side === 'left' ? left[idx] : right[idx];
+  if (matched.includes(item.pairIdx)) return;
+  if (side === 'left') gameState.selectedLeft = idx;
+  else gameState.selectedRight = idx;
+  if (gameState.selectedLeft !== null && gameState.selectedRight !== null) {
+    const l = left[gameState.selectedLeft];
+    const r = right[gameState.selectedRight];
+    if (l.pairIdx === r.pairIdx) {
+      gameState.matched.push(l.pairIdx);
+      gameState.score++;
+    } else {
+      // flash wrong
+      const area = document.getElementById('game-area');
+      const items = area.querySelectorAll('.match-item.selected');
+      items.forEach(el => { el.classList.add('wrong-flash'); el.classList.remove('selected'); });
+      setTimeout(() => { items.forEach(el => el.classList.remove('wrong-flash')); }, 500);
+    }
+    gameState.selectedLeft = null;
+    gameState.selectedRight = null;
+    setTimeout(() => renderMatch(document.getElementById('game-area')), 300);
+    return;
+  }
+  renderMatch(document.getElementById('game-area'));
 }
 
-/* ---- FINAL SCORE ---- */
+/* ---- LINK CATEGORY ---- */
+function startCategory(area) {
+  gameState = { questions: shuffle(CATEGORY_DATA).slice(0, 10), idx: 0, score: 0 };
+  renderCategory(area);
+}
+function renderCategory(area) {
+  const { questions, idx, score } = gameState;
+  if (idx >= questions.length) { renderFinalScore(area, score, questions.length); return; }
+  const q = questions[idx];
+  const opts = shuffle(q.options);
+  area.innerHTML = `
+    <div class="game-card">
+      ${progressBar(idx, questions.length)}
+      <h3>What category does this linking word belong to?</h3>
+      <div class="cat-word">${q.word}</div>
+      <div class="cat-options" id="cat-opts">
+        ${opts.map(o => `<button class="game-opt" onclick="checkCategory(this,'${esc(o)}','${esc(q.cat)}')">${o}</button>`).join('')}
+      </div>
+      <div class="game-feedback" id="cat-fb"></div>
+      <button class="game-next" id="cat-next" onclick="gameState.idx++;renderCategory(document.getElementById('game-area'))">Next &rarr;</button>
+    </div>`;
+}
+function checkCategory(btn, chosen, answer) {
+  const opts = document.querySelectorAll('#cat-opts .game-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  const fb = document.getElementById('cat-fb');
+  if (chosen === answer) {
+    btn.classList.add('correct');
+    fb.textContent = 'Correct!'; fb.className = 'game-feedback show ok'; gameState.score++;
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o => { if (o.textContent === answer) o.classList.add('correct'); });
+    fb.textContent = 'It belongs to: ' + answer; fb.className = 'game-feedback show ko';
+  }
+  document.getElementById('cat-next').classList.add('show');
+}
+
+/* ---- PHRASAL VERBS ---- */
+function startPhrasal(area) {
+  gameState = { questions: shuffle(PHRASAL_DATA).slice(0, 8), idx: 0, score: 0 };
+  renderPhrasal(area);
+}
+function renderPhrasal(area) {
+  const { questions, idx, score } = gameState;
+  if (idx >= questions.length) { renderFinalScore(area, score, questions.length); return; }
+  const q = questions[idx];
+  const opts = shuffle(q.options);
+  area.innerHTML = `
+    <div class="game-card">
+      ${progressBar(idx, questions.length)}
+      <h3>What does this phrasal verb mean?</h3>
+      <div class="cat-word">${q.verb}</div>
+      <div class="cat-options" id="phr-opts">
+        ${opts.map(o => `<button class="game-opt" onclick="checkPhrasal(this,'${esc(o)}','${esc(q.meaning)}')">${o}</button>`).join('')}
+      </div>
+      <div class="game-feedback" id="phr-fb"></div>
+      <button class="game-next" id="phr-next" onclick="gameState.idx++;renderPhrasal(document.getElementById('game-area'))">Next &rarr;</button>
+    </div>`;
+}
+function checkPhrasal(btn, chosen, answer) {
+  const opts = document.querySelectorAll('#phr-opts .game-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  const fb = document.getElementById('phr-fb');
+  if (chosen === answer) {
+    btn.classList.add('correct');
+    fb.textContent = 'Correct!'; fb.className = 'game-feedback show ok'; gameState.score++;
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o => { if (o.textContent === answer) o.classList.add('correct'); });
+    fb.textContent = 'It means: ' + answer; fb.className = 'game-feedback show ko';
+  }
+  document.getElementById('phr-next').classList.add('show');
+}
+
+/* ---- TENSE PICK ---- */
+function startTense(area) {
+  gameState = { questions: shuffle(TENSE_DATA).slice(0, 8), idx: 0, score: 0 };
+  renderTense(area);
+}
+function renderTense(area) {
+  const { questions, idx, score } = gameState;
+  if (idx >= questions.length) { renderFinalScore(area, score, questions.length); return; }
+  const q = questions[idx];
+  const opts = shuffle(q.options);
+  area.innerHTML = `
+    <div class="game-card">
+      ${progressBar(idx, questions.length)}
+      <h3>Choose the correct form:</h3>
+      <div class="game-sentence">${q.sentence.replace('___', '<span class="blank">???</span>')}</div>
+      <div class="game-options" id="tense-opts">
+        ${opts.map(o => `<button class="game-opt" onclick="checkTense(this,'${esc(o)}','${esc(q.answer)}')">${o}</button>`).join('')}
+      </div>
+      <div class="game-feedback" id="tense-fb"></div>
+      <button class="game-next" id="tense-next" onclick="gameState.idx++;renderTense(document.getElementById('game-area'))">Next &rarr;</button>
+    </div>`;
+}
+function checkTense(btn, chosen, answer) {
+  const opts = document.querySelectorAll('#tense-opts .game-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  const fb = document.getElementById('tense-fb');
+  const q = gameState.questions[gameState.idx];
+  document.querySelector('.blank').textContent = answer;
+  if (chosen === answer) {
+    btn.classList.add('correct');
+    fb.textContent = 'Correct! ' + q.explain; fb.className = 'game-feedback show ok'; gameState.score++;
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o => { if (o.textContent === answer) o.classList.add('correct'); });
+    fb.textContent = q.explain; fb.className = 'game-feedback show ko';
+  }
+  document.getElementById('tense-next').classList.add('show');
+}
+
+/* ---- SHARED ---- */
+function progressBar(idx, total) {
+  return `<div class="game-progress">
+    <div class="game-progress-bar"><div class="game-progress-fill" style="width:${(idx/total)*100}%"></div></div>
+    <div class="game-progress-text">${idx+1} / ${total}</div>
+  </div>`;
+}
+
 function renderFinalScore(area, score, total) {
   const pct = Math.round((score/total)*100);
-  let msg = pct >= 80 ? 'Excellent work! You\'re ready for Band 6+!' : pct >= 50 ? 'Good effort! Keep practising!' : 'Keep going! Review the cheat sheet and try again.';
+  const msg = pct >= 80 ? 'Excellent! Ready for Band 6+!' : pct >= 50 ? 'Good effort! Keep practising!' : 'Review the cheat sheet and try again!';
+  const dots = Array.from({length:total}, (_,i) => `<span style="font-size:1.4rem;color:${i<score?'#48bb78':'#e2e8f0'};">&#9679;</span>`).join(' ');
   area.innerHTML = `
     <div class="game-card game-score-final">
       <div class="big">${score} / ${total}</div>
       <div class="msg">${msg}</div>
-      <div style="margin-bottom:12px;">
-        ${'<span style="font-size:1.4rem;">'.repeat(0)}${Array.from({length:total}, (_,i) => i < score ? '<span style="font-size:1.4rem;color:#48bb78;">&#9679;</span>' : '<span style="font-size:1.4rem;color:#e2e8f0;">&#9679;</span>').join(' ')}
-      </div>
+      <div style="margin-bottom:12px;">${dots}</div>
       <button class="game-restart" onclick="startGame()">Play Again</button>
     </div>`;
 }
-
-// Auto-start first game when Practice tab is shown
-const origShow = show;
-show = function(id) {
-  origShow(id);
-  if (id === 'practice') startGame();
-};
 </script>
 </body>
 </html>
