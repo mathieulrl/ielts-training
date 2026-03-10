@@ -94,15 +94,19 @@
 
   .sort-zone.highlight { border-color: #4299e1; background: #ebf8ff; }
 
-  /* Match pairs game */
-  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .match-col-header { font-size: 0.75rem; font-weight: 700; color: #718096; text-transform: uppercase; text-align: center; padding: 4px; }
-  .match-item { padding: 10px 12px; border-radius: 10px; border: 2px solid #e2e8f0; background: white; text-align: center; cursor: pointer; font-size: 0.82rem; transition: all 0.2s; }
-  .match-item:hover { border-color: #4299e1; }
-  .match-item.selected { border-color: #4299e1; background: #ebf8ff; box-shadow: 0 0 0 3px rgba(66,153,225,0.2); }
-  .match-item.matched { border-color: #48bb78; background: #f0fff4; color: #276749; pointer-events: none; opacity: 0.7; }
-  .match-item.wrong-flash { border-color: #fc8181; background: #fff5f5; }
-  .match-item.disabled { pointer-events: none; opacity: 0.5; }
+  /* Memory game */
+  .mem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .mem-card { aspect-ratio: 1; border-radius: 10px; cursor: pointer; perspective: 600px; }
+  .mem-card-inner { width: 100%; height: 100%; position: relative; transition: transform 0.4s; transform-style: preserve-3d; }
+  .mem-card.flipped .mem-card-inner { transform: rotateY(180deg); }
+  .mem-card-front, .mem-card-back { position: absolute; inset: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; backface-visibility: hidden; font-size: 0.8rem; font-weight: 600; padding: 6px; text-align: center; border: 2px solid #e2e8f0; }
+  .mem-card-front { background: linear-gradient(135deg, #4299e1, #2b6cb0); color: white; font-size: 1.4rem; }
+  .mem-card-back { transform: rotateY(180deg); background: white; color: #2d3748; }
+  .mem-card-back .mem-label { font-size: 0.6rem; color: #a0aec0; text-transform: uppercase; display: block; margin-bottom: 2px; }
+  .mem-card.matched .mem-card-back { border-color: #48bb78; background: #f0fff4; color: #276749; }
+  .mem-card.wrong .mem-card-back { border-color: #fc8181; background: #fff5f5; }
+  .mem-card.matched { pointer-events: none; }
+  .mem-stats { display: flex; gap: 16px; justify-content: center; margin-bottom: 12px; font-size: 0.82rem; font-weight: 600; color: #4a5568; }
 
   /* Category game */
   .cat-options { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -110,7 +114,7 @@
 
   @media (max-width: 500px) {
     .sort-zones { flex-direction: column; }
-    .match-grid { grid-template-columns: 1fr; }
+    .mem-grid { grid-template-columns: repeat(3, 1fr); }
   }
 </style>
 </head>
@@ -677,10 +681,12 @@
     <button class="game-btn active" onclick="switchGame('fill',this)">Fill the Gap</button>
     <button class="game-btn" onclick="switchGame('sort',this)">Formal or Informal?</button>
     <button class="game-btn" onclick="switchGame('fix',this)">Fix the Sentence</button>
-    <button class="game-btn" onclick="switchGame('match',this)">Word Match</button>
+    <button class="game-btn" onclick="switchGame('memory',this)">Memory Cards</button>
     <button class="game-btn" onclick="switchGame('category',this)">Link Category</button>
     <button class="game-btn" onclick="switchGame('phrasal',this)">Phrasal Verbs</button>
     <button class="game-btn" onclick="switchGame('tense',this)">Tense Pick</button>
+    <button class="game-btn" onclick="switchGame('situation',this)">What to Say?</button>
+    <button class="game-btn" onclick="switchGame('vocab',this)">Vocab Quiz</button>
   </div>
   <div class="game-area" id="game-area"></div>
 </div>
@@ -718,6 +724,13 @@ const FILL_DATA = [
   { sentence: "It is widely ___ that education plays a vital role.", answer: "acknowledged", options: ["acknowledged", "told", "said to", "spoken"] },
   { sentence: "The essay should be ___ four paragraphs.", answer: "divided into", options: ["divided into", "made by", "built from", "set on"] },
   { sentence: "___ being expensive, the course was worth it.", answer: "Despite", options: ["Despite", "Although", "Because", "Since"] },
+  { sentence: "Not only is she talented, ___ she is also hardworking.", answer: "but", options: ["and", "but", "so", "yet"] },
+  { sentence: "Either you study harder, ___ you will fail the exam.", answer: "or", options: ["and", "or", "but", "nor"] },
+  { sentence: "Neither the teacher ___ the students were happy with the result.", answer: "nor", options: ["or", "nor", "and", "but"] },
+  { sentence: "Poverty can ___ many social problems in a community.", answer: "give rise to", options: ["give rise to", "stem from", "be attributed to", "result from"] },
+  { sentence: "The increase in crime ___ a lack of investment in education.", answer: "stems from", options: ["leads to", "stems from", "brings about", "gives rise to"] },
+  { sentence: "The city ___, which is the capital, attracts millions of tourists.", answer: "London", options: ["London", "that", "where", "it"] },
+  { sentence: "Education plays a ___ role in reducing inequality.", answer: "crucial", options: ["crucial", "large", "nice", "good"] },
 ];
 
 const SORT_DATA = [
@@ -759,6 +772,11 @@ const FIX_DATA = [
   { wrong: "He is very exhausted after the exam.", right: "He is absolutely exhausted after the exam.", explain: "'Exhausted' is non-gradable. Use 'absolutely/completely', not 'very'." },
   { wrong: "The informations are very useful.", right: "The information is very useful.", explain: "'Information' is uncountable — no plural, singular verb." },
   { wrong: "I didn't used to like coffee.", right: "I didn't use to like coffee.", explain: "After 'didn't', use the base form: 'use to' (not 'used to')." },
+  { wrong: "The city where I live in is noisy.", right: "The city that I live in is noisy.", explain: "With 'live in', use 'that' (or omit). 'Where' already includes 'in' (= in which)." },
+  { wrong: "My sister, that lives in Paris, is a doctor.", right: "My sister, who lives in Paris, is a doctor.", explain: "Non-defining relative clauses (with commas) use 'who/which', never 'that'." },
+  { wrong: "The unemployment is a major problem.", right: "Unemployment is a major problem.", explain: "Abstract/uncountable nouns used generally don't take 'the'." },
+  { wrong: "He is much freezing after the swim.", right: "He is absolutely freezing after the swim.", explain: "'Freezing' is non-gradable. Use 'absolutely/completely', not 'much/very'." },
+  { wrong: "There has been a considerable increase of crime.", right: "There has been a considerable increase in crime.", explain: "The correct collocation is 'increase in' (not 'increase of')." },
 ];
 
 const MATCH_DATA = [
@@ -801,6 +819,15 @@ const CATEGORY_DATA = [
   { word: "In other words", cat: "Reformulating", options: ["Reformulating", "Example", "Adding", "Conclusion"] },
   { word: "All things considered", cat: "Conclusion", options: ["Contrasting", "Adding", "Conclusion", "Time"] },
   { word: "Not to mention", cat: "Adding", options: ["Contrasting", "Adding", "Result", "Cause"] },
+  { word: "Albeit", cat: "Contrasting", options: ["Contrasting", "Adding", "Cause", "Conclusion"] },
+  { word: "Accordingly", cat: "Result", options: ["Time", "Result", "Cause", "Adding"] },
+  { word: "Coupled with", cat: "Adding", options: ["Contrasting", "Adding", "Result", "Cause"] },
+  { word: "Provided that", cat: "Cause", options: ["Cause", "Result", "Time", "Conclusion"] },
+  { word: "To illustrate", cat: "Example", options: ["Adding", "Example", "Conclusion", "Result"] },
+  { word: "Not only … but also", cat: "Correlative", options: ["Adding", "Correlative", "Contrasting", "Result"] },
+  { word: "Neither … nor", cat: "Correlative", options: ["Correlative", "Cause", "Contrasting", "Time"] },
+  { word: "No sooner … than", cat: "Correlative", options: ["Time", "Correlative", "Result", "Cause"] },
+  { word: "By and large", cat: "Conclusion", options: ["Adding", "Conclusion", "Time", "Example"] },
 ];
 
 const PHRASAL_DATA = [
@@ -835,6 +862,78 @@ const TENSE_DATA = [
   { sentence: "I'm ___ to waking up early now.", answer: "used", options: ["used", "use", "using", "being used"], explain: "'Be used to' + -ing = accustomed to something." },
 ];
 
+/* Speaking & Writing situations */
+const SITUATION_DATA = [
+  // Speaking - Buying Time
+  { situation: "The examiner asks you a difficult question and you need time to think.", answer: "That's an interesting question… Let me think about that.", options: ["That's an interesting question… Let me think about that.", "I don't know.", "Can you repeat?", "Next question please."], cat: "Speaking" },
+  { situation: "You're asked about a topic you've never considered before.", answer: "I've never really thought about it, but…", options: ["I've never really thought about it, but…", "I have no idea.", "That's boring.", "I don't want to answer."], cat: "Speaking" },
+  // Speaking - Opinion
+  { situation: "You want to express a strong personal opinion in Part 3.", answer: "I strongly believe that…", options: ["I strongly believe that…", "Maybe…", "I don't care about…", "Someone told me…"], cat: "Speaking" },
+  { situation: "You want to give your view while sounding balanced.", answer: "As far as I'm concerned…", options: ["As far as I'm concerned…", "Everyone knows that…", "Obviously…", "I'm always right about…"], cat: "Speaking" },
+  // Speaking - Speculating
+  { situation: "The examiner asks you to predict what might happen in the future.", answer: "I'd say it's likely that…", options: ["I'd say it's likely that…", "It will definitely…", "I'm sure that…", "No one can know…"], cat: "Speaking" },
+  { situation: "You want to suggest a possibility without being too certain.", answer: "It's possible that… / It might be…", options: ["It's possible that… / It might be…", "It is 100% certain…", "I guarantee…", "Obviously it will…"], cat: "Speaking" },
+  // Speaking - Comparing
+  { situation: "You need to compare two things in Part 3.", answer: "While X is…, Y tends to be…", options: ["While X is…, Y tends to be…", "X is good, Y is bad.", "They are the same.", "I prefer X."], cat: "Speaking" },
+  // Speaking - Hedging
+  { situation: "You want to make a claim but soften it to sound more academic.", answer: "It tends to be the case that…", options: ["It tends to be the case that…", "It is always true that…", "Everyone agrees that…", "There's no question that…"], cat: "Speaking" },
+  // Speaking - Part 3 Discussion
+  { situation: "The examiner asks why a social trend is happening.", answer: "There are various reasons for this trend…", options: ["There are various reasons for this trend…", "Because.", "I think it's obvious.", "People are stupid."], cat: "Speaking" },
+  // Speaking - Extending
+  { situation: "In Part 2, you want to explain why something is important to you.", answer: "The main reason I enjoy this is…", options: ["The main reason I enjoy this is…", "It's nice.", "I like it.", "It's OK I guess."], cat: "Speaking" },
+  // Writing - Request
+  { situation: "You're writing a formal letter to request information.", answer: "I would be grateful if you could…", options: ["I would be grateful if you could…", "Give me the info now.", "I want you to…", "Send me everything."], cat: "Writing" },
+  { situation: "You want to politely ask if something is possible in a letter.", answer: "I wonder if it would be possible to…", options: ["I wonder if it would be possible to…", "Is it possible?", "Can you do this?", "Do it please."], cat: "Writing" },
+  // Writing - Complaining
+  { situation: "You want to start a complaint letter about a product.", answer: "I am writing to express my dissatisfaction with…", options: ["I am writing to express my dissatisfaction with…", "Your product is terrible!", "I'm angry at you!", "This is the worst thing ever!"], cat: "Writing" },
+  { situation: "You want to express disappointment in a formal complaint.", answer: "I was rather disappointed to find that…", options: ["I was rather disappointed to find that…", "I'm so mad because…", "This is unacceptable!!!", "You should be ashamed!"], cat: "Writing" },
+  // Writing - Essay Intro
+  { situation: "You need to introduce an essay topic about a debatable issue.", answer: "The question of whether … is a matter of debate.", options: ["The question of whether … is a matter of debate.", "I will talk about…", "Today I'm going to write about…", "This essay is about…"], cat: "Writing" },
+  { situation: "You want to start an essay about a growing social concern.", answer: "In recent years, there has been growing concern about…", options: ["In recent years, there has been growing concern about…", "Nowadays people worry about…", "Everyone is scared of…", "The problem is…"], cat: "Writing" },
+  // Writing - Essay Arguments
+  { situation: "You want to present what critics say about an idea.", answer: "Critics, however, point out that…", options: ["Critics, however, point out that…", "But some people think…", "Others say bad things like…", "Haters gonna hate…"], cat: "Writing" },
+  // Writing - Essay Conclusion
+  { situation: "You need to write a balanced conclusion for an essay.", answer: "On balance, I believe that…", options: ["On balance, I believe that…", "So that's it.", "In the end, whatever.", "To finish, I think I'm right."], cat: "Writing" },
+  // Writing - Cohesion
+  { situation: "You want to refer back to something you mentioned earlier in your essay.", answer: "As mentioned above…", options: ["As mentioned above…", "Like I said before…", "Remember when I said…", "I already told you…"], cat: "Writing" },
+  // Writing - Closing
+  { situation: "You need to close a formal letter where you don't know the recipient's name.", answer: "Yours faithfully,", options: ["Yours faithfully,", "Yours sincerely,", "Best regards,", "Cheers,"], cat: "Writing" },
+];
+
+/* Vocabulary quiz (Opinion, Trends, Society, Cause&Effect, Collocations, Comparatives) */
+const VOCAB_DATA = [
+  // Opinion & Attitude
+  { question: "Something that could cause harm or damage is:", answer: "detrimental", options: ["detrimental", "beneficial", "feasible", "remarkable"] },
+  { question: "Something that is very important and necessary is:", answer: "crucial", options: ["apparent", "controversial", "crucial", "challenging"] },
+  { question: "Something that is possible and can realistically be done is:", answer: "feasible", options: ["inevitable", "detrimental", "feasible", "concerning"] },
+  { question: "Something that is worth the time or effort spent on it is:", answer: "worthwhile", options: ["worthwhile", "controversial", "apparent", "inevitable"] },
+  { question: "Something that causes disagreement or debate is:", answer: "controversial", options: ["beneficial", "significant", "controversial", "remarkable"] },
+  // Change & Trends
+  { question: "When numbers go up and down irregularly, they:", answer: "fluctuate", options: ["fluctuate", "decline", "remain stable", "increase"] },
+  { question: "A sudden and large increase is called:", answer: "a sharp rise", options: ["a gradual decline", "a sharp rise", "a steady rate", "a significant shift"] },
+  { question: "When something stays at the same level, it:", answer: "remains stable", options: ["fluctuates", "declines", "remains stable", "shifts"] },
+  { question: "A slow decrease over time is called:", answer: "a gradual decline", options: ["a sharp rise", "a gradual decline", "a significant shift", "a steady rate"] },
+  // Society & Issues
+  { question: "The process of people moving from rural areas to cities is called:", answer: "urbanisation", options: ["migration", "urbanisation", "sustainability", "inequality"] },
+  { question: "The ability to maintain current practices without harming future generations:", answer: "sustainability", options: ["well-being", "sustainability", "infrastructure", "poverty"] },
+  { question: "The basic systems and services (roads, electricity, etc.) a country needs:", answer: "infrastructure", options: ["workforce", "infrastructure", "urbanisation", "generation"] },
+  { question: "People's overall state of health and happiness:", answer: "well-being", options: ["poverty", "inequality", "well-being", "migration"] },
+  // Cause & Effect
+  { question: "'The lack of funding ___ the closure of many schools.' Choose the right verb:", answer: "led to", options: ["led to", "stemmed from", "was attributed to", "resulted from"] },
+  { question: "'The crisis ___ years of mismanagement.' Choose the right verb:", answer: "stemmed from", options: ["brought about", "led to", "stemmed from", "gave rise to"] },
+  { question: "'Fast food can ___ health problems.' Choose the right verb:", answer: "contribute to", options: ["stem from", "be attributed to", "contribute to", "result from"] },
+  // Collocations
+  { question: "Complete: 'Education plays a ___ role in society.'", answer: "vital", options: ["big", "vital", "nice", "good"] },
+  { question: "Complete: 'The government should take ___ to address the problem.'", answer: "measures", options: ["measures", "actions", "things", "moves"] },
+  { question: "Complete: 'We need to raise ___ of climate change.'", answer: "awareness", options: ["awareness", "knowledge", "attention", "thinking"] },
+  { question: "Complete: 'Tourism has a significant ___ on the local economy.'", answer: "impact", options: ["effect", "impact", "result", "damage"] },
+  { question: "Complete: 'She made a valuable ___ to the project.'", answer: "contribution", options: ["contribution", "addition", "help", "support"] },
+  // Modifying Comparatives
+  { question: "Which modifier works with 'better'? '___ better'", answer: "far", options: ["far", "absolutely", "completely", "totally"] },
+  { question: "Which modifier softens a comparative? '___ more expensive'", answer: "slightly", options: ["much", "slightly", "far", "completely"] },
+  { question: "Complete: 'This solution is ___ as effective as the previous one.'", answer: "not nearly", options: ["not nearly", "very", "absolutely", "completely"] },
+];
+
 let currentGame = 'fill';
 let gameState = {};
 
@@ -857,10 +956,12 @@ function startGame() {
   if (currentGame === 'fill') startFill(area);
   else if (currentGame === 'sort') startSort(area);
   else if (currentGame === 'fix') startFix(area);
-  else if (currentGame === 'match') startMatch(area);
+  else if (currentGame === 'memory') startMemory(area);
   else if (currentGame === 'category') startCategory(area);
   else if (currentGame === 'phrasal') startPhrasal(area);
   else if (currentGame === 'tense') startTense(area);
+  else if (currentGame === 'situation') startSituation(area);
+  else if (currentGame === 'vocab') startVocab(area);
 }
 
 function esc(s) { return s.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
@@ -1007,59 +1108,80 @@ function checkFix(btn, isCorrect) {
   document.getElementById('fix-next').classList.add('show');
 }
 
-/* ---- WORD MATCH (informal → formal) ---- */
-function startMatch(area) {
-  const pairs = shuffle(MATCH_DATA).slice(0, 8);
-  const leftItems = pairs.map((p,i) => ({ text: p.informal, pairIdx: i, side: 'left' }));
-  const rightItems = shuffle(pairs.map((p,i) => ({ text: p.formal, pairIdx: i, side: 'right' })));
-  gameState = { pairs, left: leftItems, right: rightItems, selectedLeft: null, selectedRight: null, matched: [], score: 0 };
-  renderMatch(area);
+/* ---- MEMORY CARDS (informal ↔ formal) ---- */
+function startMemory(area) {
+  const pairs = shuffle(MATCH_DATA).slice(0, 6);
+  const cards = shuffle(pairs.flatMap((p, i) => [
+    { id: i, text: p.informal, label: 'informal', pairId: i },
+    { id: i, text: p.formal, label: 'formal', pairId: i },
+  ]));
+  gameState = { cards, flipped: [], matched: [], moves: 0, locked: false };
+  renderMemory(area);
 }
-function renderMatch(area) {
-  const { left, right, selectedLeft, selectedRight, matched } = gameState;
-  const done = matched.length === left.length;
-  if (done) { renderFinalScore(area, gameState.score, left.length); return; }
+function renderMemory(area) {
+  const { cards, flipped, matched, moves } = gameState;
+  const pairsFound = matched.length / 2;
+  const totalPairs = cards.length / 2;
+  if (pairsFound === totalPairs && totalPairs > 0) {
+    const stars = moves <= totalPairs + 2 ? 3 : moves <= totalPairs + 5 ? 2 : 1;
+    area.innerHTML = `
+      <div class="game-card game-score-final">
+        <div class="big">${'&#9733; '.repeat(stars)}${'&#9734; '.repeat(3-stars)}</div>
+        <div class="msg">All pairs found in ${moves} moves!</div>
+        <div style="margin-bottom:12px;font-size:0.85rem;color:#718096;">${moves <= totalPairs + 2 ? 'Perfect memory!' : moves <= totalPairs + 5 ? 'Well done!' : 'Keep practising!'}</div>
+        <button class="game-restart" onclick="startGame()">Play Again</button>
+      </div>`;
+    return;
+  }
   area.innerHTML = `
     <div class="game-card">
-      ${progressBar(matched.length, left.length)}
-      <h3>Match each informal word with its formal equivalent:</h3>
-      <div class="match-grid">
-        <div class="match-col-header">Informal</div>
-        <div class="match-col-header">Formal</div>
-        ${left.map((l,i) => {
-          const lMatched = matched.includes(l.pairIdx);
-          const lSel = selectedLeft === i;
-          return `<div class="match-item${lMatched?' matched':''}${lSel?' selected':''}" onclick="pickMatch('left',${i})">${l.text}</div>
-                  <div class="match-item${matched.includes(right[i].pairIdx)?' matched':''}${selectedRight===i?' selected':''}" onclick="pickMatch('right',${i})">${right[i].text}</div>`;
+      <h3>Find the matching informal / formal pairs!</h3>
+      <div class="mem-stats">
+        <span>Pairs: ${pairsFound} / ${totalPairs}</span>
+        <span>Moves: ${moves}</span>
+      </div>
+      <div class="mem-grid">
+        ${cards.map((c, i) => {
+          const isFlipped = flipped.includes(i) || matched.includes(i);
+          const isMatched = matched.includes(i);
+          const isWrong = gameState.wrongPair && gameState.wrongPair.includes(i);
+          return `<div class="mem-card${isFlipped?' flipped':''}${isMatched?' matched':''}${isWrong?' wrong':''}" onclick="flipCard(${i})">
+            <div class="mem-card-inner">
+              <div class="mem-card-front">?</div>
+              <div class="mem-card-back"><span class="mem-label">${c.label}</span>${c.text}</div>
+            </div>
+          </div>`;
         }).join('')}
       </div>
     </div>`;
 }
-function pickMatch(side, idx) {
-  const { left, right, matched } = gameState;
-  const item = side === 'left' ? left[idx] : right[idx];
-  if (matched.includes(item.pairIdx)) return;
-  if (side === 'left') gameState.selectedLeft = idx;
-  else gameState.selectedRight = idx;
-  if (gameState.selectedLeft !== null && gameState.selectedRight !== null) {
-    const l = left[gameState.selectedLeft];
-    const r = right[gameState.selectedRight];
-    if (l.pairIdx === r.pairIdx) {
-      gameState.matched.push(l.pairIdx);
-      gameState.score++;
+function flipCard(idx) {
+  const { cards, flipped, matched, locked } = gameState;
+  if (locked || flipped.includes(idx) || matched.includes(idx)) return;
+  gameState.flipped = [...flipped, idx];
+  gameState.wrongPair = null;
+  renderMemory(document.getElementById('game-area'));
+
+  if (gameState.flipped.length === 2) {
+    gameState.moves++;
+    gameState.locked = true;
+    const [a, b] = gameState.flipped;
+    if (cards[a].pairId === cards[b].pairId) {
+      gameState.matched = [...matched, a, b];
+      gameState.flipped = [];
+      gameState.locked = false;
+      setTimeout(() => renderMemory(document.getElementById('game-area')), 400);
     } else {
-      // flash wrong
-      const area = document.getElementById('game-area');
-      const items = area.querySelectorAll('.match-item.selected');
-      items.forEach(el => { el.classList.add('wrong-flash'); el.classList.remove('selected'); });
-      setTimeout(() => { items.forEach(el => el.classList.remove('wrong-flash')); }, 500);
+      gameState.wrongPair = [a, b];
+      setTimeout(() => renderMemory(document.getElementById('game-area')), 100);
+      setTimeout(() => {
+        gameState.flipped = [];
+        gameState.wrongPair = null;
+        gameState.locked = false;
+        renderMemory(document.getElementById('game-area'));
+      }, 1000);
     }
-    gameState.selectedLeft = null;
-    gameState.selectedRight = null;
-    setTimeout(() => renderMatch(document.getElementById('game-area')), 300);
-    return;
   }
-  renderMatch(document.getElementById('game-area'));
 }
 
 /* ---- LINK CATEGORY ---- */
@@ -1173,6 +1295,80 @@ function checkTense(btn, chosen, answer) {
     fb.textContent = q.explain; fb.className = 'game-feedback show ko';
   }
   document.getElementById('tense-next').classList.add('show');
+}
+
+/* ---- WHAT TO SAY? (Speaking & Writing phrases) ---- */
+function startSituation(area) {
+  gameState = { questions: shuffle(SITUATION_DATA).slice(0, 10), idx: 0, score: 0 };
+  renderSituation(area);
+}
+function renderSituation(area) {
+  const { questions, idx, score } = gameState;
+  if (idx >= questions.length) { renderFinalScore(area, score, questions.length); return; }
+  const q = questions[idx];
+  const opts = shuffle(q.options);
+  area.innerHTML = `
+    <div class="game-card">
+      ${progressBar(idx, questions.length)}
+      <h3><span class="tag ${q.cat==='Speaking'?'orange':'green'}">${q.cat}</span> What would you say?</h3>
+      <div class="cat-word" style="font-size:0.9rem;font-weight:500;">${q.situation}</div>
+      <div class="fix-options" id="sit-opts">
+        ${opts.map(o => `<button class="fix-opt" onclick="checkSituation(this,'${esc(o)}','${esc(q.answer)}')">${o}</button>`).join('')}
+      </div>
+      <div class="game-feedback" id="sit-fb"></div>
+      <button class="game-next" id="sit-next" onclick="gameState.idx++;renderSituation(document.getElementById('game-area'))">Next &rarr;</button>
+    </div>`;
+}
+function checkSituation(btn, chosen, answer) {
+  const opts = document.querySelectorAll('#sit-opts .fix-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  const fb = document.getElementById('sit-fb');
+  if (chosen === answer) {
+    btn.classList.add('correct');
+    fb.textContent = 'Correct!'; fb.className = 'game-feedback show ok'; gameState.score++;
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o => { if (o.textContent === answer) o.classList.add('correct'); });
+    fb.textContent = 'Best answer: ' + answer; fb.className = 'game-feedback show ko';
+  }
+  document.getElementById('sit-next').classList.add('show');
+}
+
+/* ---- VOCAB QUIZ (Opinion, Trends, Society, Collocations, Comparatives) ---- */
+function startVocab(area) {
+  gameState = { questions: shuffle(VOCAB_DATA).slice(0, 10), idx: 0, score: 0 };
+  renderVocab(area);
+}
+function renderVocab(area) {
+  const { questions, idx, score } = gameState;
+  if (idx >= questions.length) { renderFinalScore(area, score, questions.length); return; }
+  const q = questions[idx];
+  const opts = shuffle(q.options);
+  area.innerHTML = `
+    <div class="game-card">
+      ${progressBar(idx, questions.length)}
+      <h3>Pick the right word:</h3>
+      <div class="cat-word" style="font-size:0.9rem;font-weight:500;">${q.question}</div>
+      <div class="cat-options" id="voc-opts">
+        ${opts.map(o => `<button class="game-opt" onclick="checkVocab(this,'${esc(o)}','${esc(q.answer)}')">${o}</button>`).join('')}
+      </div>
+      <div class="game-feedback" id="voc-fb"></div>
+      <button class="game-next" id="voc-next" onclick="gameState.idx++;renderVocab(document.getElementById('game-area'))">Next &rarr;</button>
+    </div>`;
+}
+function checkVocab(btn, chosen, answer) {
+  const opts = document.querySelectorAll('#voc-opts .game-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  const fb = document.getElementById('voc-fb');
+  if (chosen === answer) {
+    btn.classList.add('correct');
+    fb.textContent = 'Correct!'; fb.className = 'game-feedback show ok'; gameState.score++;
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o => { if (o.textContent === answer) o.classList.add('correct'); });
+    fb.textContent = 'The answer is: ' + answer; fb.className = 'game-feedback show ko';
+  }
+  document.getElementById('voc-next').classList.add('show');
 }
 
 /* ---- SHARED ---- */
