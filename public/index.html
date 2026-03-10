@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS B2 Cheat Sheet</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a202c; font-size: 13px; }
+  h1 { text-align: center; padding: 18px; background: linear-gradient(135deg, #2b6cb0, #4299e1); color: white; font-size: 1.3rem; letter-spacing: 1px; }
+  .subtitle { text-align: center; background: #2b6cb0; color: #bee3f8; padding: 0 0 10px; font-size: 0.8rem; }
+  .tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 12px; background: #ebf8ff; border-bottom: 2px solid #bee3f8; }
+  .tab { padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.78rem; border: 2px solid transparent; transition: all 0.2s; background: white; color: #2b6cb0; }
+  .tab.active, .tab:hover { background: #2b6cb0; color: white; }
+  .section { display: none; padding: 14px; max-width: 1100px; margin: 0 auto; }
+  .section.active { display: block; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .card { background: white; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-left: 4px solid #4299e1; }
+  .card h3 { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #2b6cb0; margin-bottom: 8px; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 3px 0; border-bottom: 1px solid #f0f4f8; display: flex; align-items: flex-start; gap: 6px; }
+  .card ul li:last-child { border-bottom: none; }
+  .tag { display: inline-block; background: #ebf8ff; color: #2b6cb0; border-radius: 4px; padding: 1px 5px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+  .tag.green { background: #f0fff4; color: #276749; }
+  .tag.orange { background: #fffaf0; color: #c05621; }
+  .tag.purple { background: #faf5ff; color: #6b46c1; }
+  .example { color: #718096; font-style: italic; font-size: 0.75rem; margin-top: 2px; display: block; }
+  .tip { background: #fffff0; border: 1px solid #f6e05e; border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 0.8rem; color: #744210; }
+  .tip strong { color: #c05621; }
+  .full { grid-column: 1 / -1; }
+  .phrase-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { background: #ebf8ff; color: #2c5282; border-radius: 12px; padding: 3px 10px; font-size: 0.76rem; border: 1px solid #bee3f8; }
+  .chip.g { background: #f0fff4; color: #22543d; border-color: #9ae6b4; }
+  .chip.o { background: #fffaf0; color: #7b341e; border-color: #fbd38d; }
+  .chip.p { background: #faf5ff; color: #44337a; border-color: #d6bcfa; }
+  .score-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
+  .score-item { background: white; border-radius: 8px; padding: 8px 14px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.1); flex: 1; min-width: 120px; }
+  .score-item .num { font-size: 1.6rem; font-weight: 800; color: #2b6cb0; }
+  .score-item .lbl { font-size: 0.7rem; color: #718096; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<h1>IELTS General – B2 Reference Card</h1>
+<p class="subtitle">Speaking & Writing — Target: Band 6.0</p>
+
+<div class="tabs">
+  <div class="tab active" onclick="show('linking')">Linking Words</div>
+  <div class="tab" onclick="show('grammar')">Key Grammar</div>
+  <div class="tab" onclick="show('vocabulary')">Vocabulary</div>
+  <div class="tab" onclick="show('speaking')">Speaking Phrases</div>
+  <div class="tab" onclick="show('writing')">Writing Phrases</div>
+  <div class="tab" onclick="show('tips')">Band 6 Tips</div>
+</div>
+
+<!-- LINKING WORDS -->
+<div id="linking" class="section active">
+  <div class="grid">
+    <div class="card">
+      <h3>Adding Information</h3>
+      <div class="phrase-list">
+        <span class="chip">Furthermore</span><span class="chip">Moreover</span>
+        <span class="chip">In addition (to this)</span><span class="chip">What is more</span>
+        <span class="chip">Not only … but also</span><span class="chip">As well as</span>
+        <span class="chip">Together with</span><span class="chip">Coupled with</span>
+        <span class="chip">Equally important</span><span class="chip">By the same token</span>
+        <span class="chip">Not to mention</span><span class="chip">Likewise</span>
+        <span class="chip">Correspondingly</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Contrasting / Opposition</h3>
+      <div class="phrase-list">
+        <span class="chip o">However</span><span class="chip o">Nevertheless</span>
+        <span class="chip o">Nonetheless</span><span class="chip o">On the other hand</span>
+        <span class="chip o">On the contrary</span><span class="chip o">Although / Even though</span>
+        <span class="chip o">Despite / In spite of</span><span class="chip o">While / Whereas</span>
+        <span class="chip o">Yet / Still</span><span class="chip o">Conversely</span>
+        <span class="chip o">Otherwise</span><span class="chip o">Instead</span>
+        <span class="chip o">Albeit</span><span class="chip o">Notwithstanding</span>
+        <span class="chip o">Rather</span><span class="chip o">Above all</span>
+        <span class="chip o">Be that as it may</span><span class="chip o">Regardless</span>
+        <span class="chip o">After all</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Cause / Condition / Purpose</h3>
+      <div class="phrase-list">
+        <span class="chip g">Because / Since / As</span><span class="chip g">Due to / Owing to</span>
+        <span class="chip g">As a result of</span><span class="chip g">Given that</span>
+        <span class="chip g">On account of</span><span class="chip g">For the purpose of</span>
+        <span class="chip g">With this in mind</span><span class="chip g">So as to / So that</span>
+        <span class="chip g">In order to</span><span class="chip g">Provided that</span>
+        <span class="chip g">As long as / Unless</span><span class="chip g">In the event that</span>
+        <span class="chip g">Seeing that / Inasmuch as</span><span class="chip g">For fear that</span>
+        <span class="chip g">Because of / In view of</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Effect / Result / Consequence</h3>
+      <div class="phrase-list">
+        <span class="chip p">Therefore / Thus</span><span class="chip p">Consequently</span>
+        <span class="chip p">As a result</span><span class="chip p">This means that</span>
+        <span class="chip p">This leads to</span><span class="chip p">Hence / Henceforth</span>
+        <span class="chip p">Accordingly</span><span class="chip p">Thereupon</span>
+        <span class="chip p">Under those circumstances</span><span class="chip p">For this reason</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Time / Sequence / Chronology</h3>
+      <div class="phrase-list">
+        <span class="chip">First of all / To begin with</span><span class="chip">Secondly / Then</span>
+        <span class="chip">After that / Subsequently</span><span class="chip">Finally / Lastly</span>
+        <span class="chip">Meanwhile / In the meantime</span><span class="chip">Eventually</span>
+        <span class="chip">Sooner or later</span><span class="chip">Prior to / Before</span>
+        <span class="chip">As soon as / Once</span><span class="chip">At the same time</span>
+        <span class="chip">Straightaway / Immediately</span><span class="chip">From time to time</span>
+        <span class="chip">Up to the present time</span><span class="chip">In due time</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Examples / Emphasis / Support</h3>
+      <div class="phrase-list">
+        <span class="chip g">For example / For instance</span><span class="chip g">Such as / Namely</span>
+        <span class="chip g">In particular / Specifically</span><span class="chip g">To illustrate</span>
+        <span class="chip g">Notably / Markedly</span><span class="chip g">In fact / Indeed</span>
+        <span class="chip g">Certainly / Surely</span><span class="chip g">To demonstrate</span>
+        <span class="chip g">To emphasize / To clarify</span><span class="chip g">Most importantly</span>
+        <span class="chip g">Especially / Expressively</span><span class="chip g">Point often overlooked</span>
+        <span class="chip g">Another key point</span><span class="chip g">With this in mind</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Conclusion / Summary</h3>
+      <div class="phrase-list">
+        <span class="chip o">In conclusion / To conclude</span><span class="chip o">To sum up / In summary</span>
+        <span class="chip o">Overall / On balance</span><span class="chip o">All things considered</span>
+        <span class="chip o">In brief / In short</span><span class="chip o">By and large</span>
+        <span class="chip o">In the final analysis</span><span class="chip o">Generally speaking</span>
+        <span class="chip o">As can be seen</span><span class="chip o">In essence / In a word</span>
+        <span class="chip o">All in all / Altogether</span><span class="chip o">In any event</span>
+        <span class="chip o">For the most part</span><span class="chip o">In the long run</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Reformulating / Clarifying</h3>
+      <div class="phrase-list">
+        <span class="chip p">In other words</span><span class="chip p">That is to say</span>
+        <span class="chip p">To put it differently</span><span class="chip p">What I mean is…</span>
+        <span class="chip p">To put it simply</span><span class="chip p">Put another way</span>
+      </div>
+      <h3 style="margin-top:10px;">Correlatives (pairs)</h3>
+      <div class="phrase-list">
+        <span class="chip">Both … and</span><span class="chip">Either … or</span>
+        <span class="chip">Neither … nor</span><span class="chip">Not only … but also</span>
+        <span class="chip">Just as … so</span><span class="chip">No sooner … than</span>
+        <span class="chip">Hardly … when</span><span class="chip">If … then</span>
+        <span class="chip">Whether … or</span>
+      </div>
+      <h3 style="margin-top:10px;">FANBOYS (Coordinating)</h3>
+      <div class="phrase-list">
+        <span class="chip g">For</span><span class="chip g">And</span><span class="chip g">Nor</span>
+        <span class="chip g">But</span><span class="chip g">Or</span><span class="chip g">Yet</span><span class="chip g">So</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KEY GRAMMAR -->
+<div id="grammar" class="section">
+  <div class="grid">
+    <div class="card">
+      <h3>Conditionals (B2 must-know)</h3>
+      <ul>
+        <li><span class="tag">2nd</span> If I had more time, I would study abroad.<span class="example">→ hypothetical present/future</span></li>
+        <li><span class="tag">3rd</span> If I had worked harder, I would have passed.<span class="example">→ regret / past hypothetical</span></li>
+        <li><span class="tag">Mixed</span> If I had studied more, I would be fluent now.<span class="example">→ past cause, present result</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Passive Voice</h3>
+      <ul>
+        <li><span class="tag green">Present</span> It is widely believed that…</li>
+        <li><span class="tag green">Past</span> The law was introduced in 2010.</li>
+        <li><span class="tag green">Future</span> Steps will be taken to address this.</li>
+        <li><span class="tag green">Modal</span> The issue could be solved by…</li>
+      </ul>
+      <span class="example">Great for formal writing – avoids saying "I/we"</span>
+    </div>
+    <div class="card">
+      <h3>Perfect Tenses</h3>
+      <ul>
+        <li><span class="tag">Present Perf.</span> I have lived here for 5 years.</li>
+        <li><span class="tag">Pres. Perf. Cont.</span> I've been studying for hours.</li>
+        <li><span class="tag">Past Perfect</span> By the time I arrived, she had left.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Modal Verbs</h3>
+      <ul>
+        <li><span class="tag orange">Certainty</span> must / can't (deduction)</li>
+        <li><span class="tag orange">Possibility</span> might / could / may</li>
+        <li><span class="tag orange">Advice</span> should / ought to</li>
+        <li><span class="tag orange">Obligation</span> must / have to / need to</li>
+        <li><span class="tag orange">Past modal</span> should have, could have, might have</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Relative Clauses</h3>
+      <ul>
+        <li><span class="tag">Defining</span> The city that I live in is quite noisy.<span class="example">→ no commas – identifies which</span></li>
+        <li><span class="tag purple">Non-defining</span> London, which is the capital, is very diverse.<span class="example">→ commas – adds extra info</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Reported Speech</h3>
+      <ul>
+        <li>She said (that) she was tired.</li>
+        <li>He told me he would call later.</li>
+        <li>She asked where I lived.</li>
+        <li>He suggested going by train.</li>
+        <li>She admitted having made a mistake.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Contrasting Structures</h3>
+      <ul>
+        <li><span class="tag green">Although</span> + clause: Although it is expensive, it is worth it.</li>
+        <li><span class="tag green">Despite</span> + noun/-ing: Despite being tired, she worked.</li>
+        <li><span class="tag green">Even though</span> + clause (stronger emphasis)</li>
+        <li><span class="tag green">In spite of</span> + noun/-ing</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Gradable Adjectives</h3>
+      <ul>
+        <li><span class="tag">Gradable</span> very / quite / rather + cold, good, tired</li>
+        <li><span class="tag orange">Non-gradable</span> absolutely / completely + freezing, perfect, exhausted</li>
+        <li><span class="tag purple">Boosters</span> incredibly, remarkably, extraordinarily</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Future Forms</h3>
+      <ul>
+        <li><span class="tag">will</span> → prediction / spontaneous decision</li>
+        <li><span class="tag green">going to</span> → plans / evidence-based prediction</li>
+        <li><span class="tag orange">Pres. Continuous</span> → fixed arrangement</li>
+        <li><span class="tag purple">Future Continuous</span> I'll be working at 8pm.</li>
+        <li><span class="tag">Future Perfect</span> I'll have finished by then.</li>
+        <li><span class="tag green">likely to / bound to</span> → degrees of certainty</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Used to / Would</h3>
+      <ul>
+        <li><span class="tag">used to</span> + inf. → past states & habits: I used to play football.</li>
+        <li><span class="tag orange">would</span> + inf. → repeated past actions: We would visit every summer.</li>
+        <li><span class="tag purple">be used to</span> + -ing → accustomed: I'm used to waking up early.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div id="vocabulary" class="section">
+  <div class="grid">
+    <div class="card">
+      <h3>Opinion & Attitude</h3>
+      <div class="phrase-list">
+        <span class="chip">beneficial</span><span class="chip">detrimental</span><span class="chip">significant</span>
+        <span class="chip">controversial</span><span class="chip">inevitable</span><span class="chip">feasible</span>
+        <span class="chip">worthwhile</span><span class="chip">challenging</span><span class="chip">concerning</span>
+        <span class="chip">remarkable</span><span class="chip">apparent</span><span class="chip">crucial</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Change & Trends</h3>
+      <div class="phrase-list">
+        <span class="chip g">increase / rise / grow</span><span class="chip g">decline / drop / fall</span>
+        <span class="chip g">fluctuate</span><span class="chip g">remain stable</span>
+        <span class="chip g">a sharp rise</span><span class="chip g">a gradual decline</span>
+        <span class="chip g">a significant shift</span><span class="chip g">at a steady rate</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Society & Issues</h3>
+      <div class="phrase-list">
+        <span class="chip o">unemployment</span><span class="chip o">inequality</span>
+        <span class="chip o">urbanisation</span><span class="chip o">sustainability</span>
+        <span class="chip o">well-being</span><span class="chip o">poverty</span>
+        <span class="chip o">infrastructure</span><span class="chip o">migration</span>
+        <span class="chip o">workforce</span><span class="chip o">generation</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Cause & Effect Vocabulary</h3>
+      <div class="phrase-list">
+        <span class="chip p">lead to</span><span class="chip p">result in</span><span class="chip p">cause</span>
+        <span class="chip p">contribute to</span><span class="chip p">stem from</span>
+        <span class="chip p">give rise to</span><span class="chip p">be attributed to</span>
+        <span class="chip p">have an impact on</span><span class="chip p">bring about</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Useful Collocations</h3>
+      <ul>
+        <li>play a key / crucial / vital <strong>role</strong></li>
+        <li>have a significant / major / minor <strong>impact</strong></li>
+        <li>raise <strong>awareness</strong> of</li>
+        <li>take <strong>measures</strong> to address</li>
+        <li>reach a <strong>conclusion</strong></li>
+        <li>meet the <strong>needs</strong> of</li>
+        <li>make a <strong>contribution</strong> to</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Phrasal Verbs (common)</h3>
+      <ul>
+        <li><span class="tag">bring up</span> – raise a topic</li>
+        <li><span class="tag">carry out</span> – do / conduct</li>
+        <li><span class="tag green">deal with</span> – handle</li>
+        <li><span class="tag green">look into</span> – investigate</li>
+        <li><span class="tag orange">make up</span> – constitute</li>
+        <li><span class="tag orange">set up</span> – establish</li>
+        <li><span class="tag purple">take up</span> – start an activity</li>
+        <li><span class="tag purple">turn down</span> – reject</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Academic / Formal Substitutes</h3>
+      <ul>
+        <li>big → <span class="chip">significant / considerable</span></li>
+        <li>good → <span class="chip">beneficial / advantageous</span></li>
+        <li>bad → <span class="chip">detrimental / adverse</span></li>
+        <li>show → <span class="chip">demonstrate / indicate</span></li>
+        <li>get → <span class="chip">obtain / acquire</span></li>
+        <li>help → <span class="chip">assist / facilitate</span></li>
+        <li>need → <span class="chip">require / necessitate</span></li>
+        <li>use → <span class="chip">utilise / employ</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Modifying Comparatives</h3>
+      <ul>
+        <li><span class="chip g">much / far / a lot</span> + comparative → much better</li>
+        <li><span class="chip">slightly / a little / a bit</span> + comparative</li>
+        <li><span class="chip o">considerably / significantly</span> + comparative</li>
+        <li><span class="chip p">not nearly as … as / just as … as</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SPEAKING PHRASES -->
+<div id="speaking" class="section">
+  <div class="grid">
+    <div class="card">
+      <h3>Buying Time / Thinking</h3>
+      <ul>
+        <li>That's an interesting question…</li>
+        <li>Let me think about that for a moment…</li>
+        <li>Well, off the top of my head…</li>
+        <li>I've never really thought about it, but…</li>
+        <li>To be honest, I would say that…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Giving Your Opinion</h3>
+      <ul>
+        <li>I strongly believe / think that…</li>
+        <li>In my opinion / view…</li>
+        <li>As far as I'm concerned…</li>
+        <li>From my perspective…</li>
+        <li>Personally, I feel that…</li>
+        <li>It seems to me that…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Speculating</h3>
+      <ul>
+        <li>I imagine that… / I suppose that…</li>
+        <li>It's possible that… / It might be…</li>
+        <li>I'd say it's likely that…</li>
+        <li>There's a good chance that…</li>
+        <li>It seems as though…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Comparing & Contrasting</h3>
+      <ul>
+        <li>Compared to… / In comparison with…</li>
+        <li>Both… and… share the feature of…</li>
+        <li>While X is…, Y tends to be…</li>
+        <li>The main difference is that…</li>
+        <li>Similarly / Likewise, …</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Clarifying / Rephrasing</h3>
+      <ul>
+        <li>What I mean is…</li>
+        <li>To put it another way…</li>
+        <li>In other words…</li>
+        <li>What I'm trying to say is…</li>
+        <li>Let me rephrase that…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Extending Your Answer (Part 2)</h3>
+      <ul>
+        <li>The main reason I enjoy this is…</li>
+        <li>What makes it special is…</li>
+        <li>I first became interested in it when…</li>
+        <li>Looking back, I think…</li>
+        <li>I'd have to say the most memorable part was…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Part 3 – Discussion Phrases</h3>
+      <ul>
+        <li>There are various reasons for this trend…</li>
+        <li>One factor that contributes to this is…</li>
+        <li>It largely depends on…</li>
+        <li>I think it's a complex issue because…</li>
+        <li>Some people argue that…, whereas others believe…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Hedging (softening claims)</h3>
+      <ul>
+        <li>It could be argued that…</li>
+        <li>To some extent, …</li>
+        <li>In many cases, …</li>
+        <li>Generally speaking, …</li>
+        <li>It tends to be the case that…</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- WRITING PHRASES -->
+<div id="writing" class="section">
+  <div class="grid">
+    <div class="card">
+      <h3>Letter – Opening Lines</h3>
+      <ul>
+        <li><span class="tag green">Formal</span> I am writing to enquire about…</li>
+        <li><span class="tag green">Formal</span> I am writing with regard to…</li>
+        <li><span class="tag orange">Semi-formal</span> I hope this letter finds you well.</li>
+        <li><span class="tag orange">Semi-formal</span> I'm writing to let you know that…</li>
+        <li><span class="tag purple">Informal</span> How are you? I just wanted to…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Letter – Making Requests</h3>
+      <ul>
+        <li>I would be grateful if you could…</li>
+        <li>I would appreciate it if you could…</li>
+        <li>Could you please let me know…?</li>
+        <li>I wonder if it would be possible to…</li>
+        <li>Would you mind…?</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Letter – Complaining</h3>
+      <ul>
+        <li>I am writing to express my dissatisfaction with…</li>
+        <li>I was rather disappointed to find that…</li>
+        <li>I feel that the standard of service was not acceptable.</li>
+        <li>I would like the matter to be resolved at your earliest convenience.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Letter – Closing Lines</h3>
+      <ul>
+        <li><span class="tag green">Formal</span> I look forward to hearing from you.</li>
+        <li><span class="tag green">Formal</span> Yours sincerely, / Yours faithfully,</li>
+        <li><span class="tag orange">Semi-f.</span> I hope to hear from you soon. Best regards,</li>
+        <li><span class="tag purple">Informal</span> Take care! / Write back soon! / All the best,</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Essay – Introducing the Topic</h3>
+      <ul>
+        <li>In recent years, there has been growing concern about…</li>
+        <li>It is widely acknowledged that…</li>
+        <li>The question of whether … is a matter of debate.</li>
+        <li>… has become an increasingly important issue.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Essay – Presenting Arguments</h3>
+      <ul>
+        <li>One of the main advantages / drawbacks is…</li>
+        <li>It is often argued that…</li>
+        <li>Proponents of this view claim that…</li>
+        <li>Critics, however, point out that…</li>
+        <li>There is no doubt that…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Essay – Conclusion</h3>
+      <ul>
+        <li>In conclusion, it is clear that…</li>
+        <li>To sum up, while … it is evident that…</li>
+        <li>On balance, I believe that…</li>
+        <li>All things considered, …</li>
+        <li>It is therefore vital that steps are taken to…</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Cohesion in Writing</h3>
+      <ul>
+        <li>Referring back: <em>As mentioned above…</em></li>
+        <li>Referring forward: <em>As will be discussed below…</em></li>
+        <li>Emphasis: <em>What is particularly striking is…</em></li>
+        <li>Concession: <em>Admittedly, … Nevertheless,…</em></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div id="tips" class="section">
+  <div class="score-bar">
+    <div class="score-item"><div class="num">6</div><div class="lbl">Lexical Resource</div></div>
+    <div class="score-item"><div class="num">6</div><div class="lbl">Grammatical Range</div></div>
+    <div class="score-item"><div class="num">6</div><div class="lbl">Coherence</div></div>
+    <div class="score-item"><div class="num">6</div><div class="lbl">Task Achievement</div></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>Speaking – Key Strategies</h3>
+      <ul>
+        <li>Never give one-word answers — always expand with a reason or example.</li>
+        <li>Use Part 1 to warm up; in Part 3, show analytical thinking.</li>
+        <li>Link your ideas: <em>because of this / which means that / as a result</em></li>
+        <li>Use a mix of tenses: past habits, present situations, future plans.</li>
+        <li>Don't self-correct too much — fluency matters more than perfection.</li>
+        <li>Use fillers naturally: <em>well, you know, I mean, actually</em></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Writing – Task 1 (Letter)</h3>
+      <ul>
+        <li>Identify the tone: formal / semi-formal / informal — and stick to it.</li>
+        <li>Address ALL bullet points in the task — missing one drops your score.</li>
+        <li>Minimum 150 words. Aim for 160–180.</li>
+        <li>Formal = no contractions (it's → it is).</li>
+        <li>Structure: Opening → Point 1 → Point 2 → Point 3 → Closing.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Writing – Task 2 (Essay)</h3>
+      <ul>
+        <li>Minimum 250 words. Aim for 260–290.</li>
+        <li>Plan 3–4 minutes before writing.</li>
+        <li>Use 4 paragraphs: Intro / Body 1 / Body 2 / Conclusion.</li>
+        <li>Each body paragraph = 1 main idea + explanation + example.</li>
+        <li>Avoid repeating the same word — use synonyms and pronouns.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Grammar Mix for Band 6</h3>
+      <ul>
+        <li>Use at least one conditional (2nd or 3rd) per essay.</li>
+        <li>Use passive voice in formal writing.</li>
+        <li>Use relative clauses to combine sentences.</li>
+        <li>Vary sentence length — mix short punchy sentences with longer complex ones.</li>
+        <li>Use modal verbs to soften claims: <em>could, might, may</em></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Common Mistakes to Avoid</h3>
+      <ul>
+        <li>Starting every sentence with "I" in the essay.</li>
+        <li>Overusing "also" — use <em>furthermore / moreover / additionally</em></li>
+        <li>Writing "in my opinion I think" → pick one.</li>
+        <li>Using very informal language in a formal letter.</li>
+        <li>Copying words from the task question — paraphrase them.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Time Management</h3>
+      <ul>
+        <li><strong>Writing:</strong> Task 1 = 20 min | Task 2 = 40 min</li>
+        <li><strong>Speaking Part 1:</strong> 4–5 min | Part 2: 2 min talk | Part 3: 4–5 min</li>
+        <li>In Part 2: use 1 min to take notes, then speak for the full 2 minutes.</li>
+        <li>In Task 2: leave 3–4 min to proofread at the end.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tip">
+    <strong>Band 6 Golden Rule:</strong> You don't need to be perfect — you need to be <em>clear, consistent, and varied</em>. Use a range of grammar structures, choose precise vocabulary, and always support your ideas with a reason or example. That's what gets you to 6.0!
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
