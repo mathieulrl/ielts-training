@@ -37,6 +37,64 @@
   .score-item { background: white; border-radius: 8px; padding: 8px 14px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.1); flex: 1; min-width: 120px; }
   .score-item .num { font-size: 1.6rem; font-weight: 800; color: #2b6cb0; }
   .score-item .lbl { font-size: 0.7rem; color: #718096; margin-top: 2px; }
+
+  /* Practice / Games */
+  .game-selector { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
+  .game-btn { padding: 8px 18px; border-radius: 20px; border: 2px solid #4299e1; background: white; color: #2b6cb0; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+  .game-btn.active, .game-btn:hover { background: #4299e1; color: white; }
+  .game-area { max-width: 680px; margin: 0 auto; }
+  .game-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 14px; }
+  .game-card h3 { color: #2b6cb0; font-size: 0.9rem; margin-bottom: 12px; }
+  .game-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .game-progress-bar { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .game-progress-fill { height: 100%; background: linear-gradient(90deg, #4299e1, #2b6cb0); border-radius: 4px; transition: width 0.4s ease; }
+  .game-progress-text { font-size: 0.78rem; color: #718096; font-weight: 600; white-space: nowrap; }
+  .game-sentence { font-size: 1rem; line-height: 1.6; margin-bottom: 16px; color: #2d3748; }
+  .game-sentence .blank { display: inline-block; min-width: 100px; border-bottom: 2px dashed #4299e1; color: #4299e1; font-weight: 700; text-align: center; padding: 0 4px; }
+  .game-options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .game-opt { padding: 8px 16px; border-radius: 10px; border: 2px solid #e2e8f0; background: white; color: #2d3748; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+  .game-opt:hover { border-color: #4299e1; background: #ebf8ff; }
+  .game-opt.correct { border-color: #48bb78; background: #f0fff4; color: #276749; }
+  .game-opt.wrong { border-color: #fc8181; background: #fff5f5; color: #c53030; }
+  .game-opt.disabled { pointer-events: none; opacity: 0.6; }
+  .game-feedback { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; display: none; }
+  .game-feedback.show { display: block; }
+  .game-feedback.ok { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
+  .game-feedback.ko { background: #fff5f5; color: #c53030; border: 1px solid #fc8181; }
+  .game-next { margin-top: 14px; padding: 10px 24px; border-radius: 10px; border: none; background: #4299e1; color: white; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: none; transition: background 0.2s; }
+  .game-next:hover { background: #2b6cb0; }
+  .game-next.show { display: inline-block; }
+  .game-score-final { text-align: center; padding: 30px; }
+  .game-score-final .big { font-size: 3rem; font-weight: 800; color: #2b6cb0; }
+  .game-score-final .msg { font-size: 1rem; color: #4a5568; margin: 8px 0 16px; }
+  .game-restart { padding: 10px 28px; border-radius: 10px; border: 2px solid #4299e1; background: white; color: #2b6cb0; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
+  .game-restart:hover { background: #4299e1; color: white; }
+
+  /* Sort game */
+  .sort-zones { display: flex; gap: 12px; margin-bottom: 14px; }
+  .sort-zone { flex: 1; min-height: 80px; border: 2px dashed #cbd5e0; border-radius: 10px; padding: 10px; text-align: center; transition: border-color 0.2s; }
+  .sort-zone h4 { font-size: 0.75rem; color: #718096; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sort-zone.drag-over { border-color: #4299e1; background: #ebf8ff; }
+  .sort-items { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px; }
+  .sort-chip { padding: 6px 14px; border-radius: 10px; background: #ebf8ff; color: #2c5282; font-size: 0.82rem; cursor: grab; border: 1px solid #bee3f8; user-select: none; transition: all 0.2s; }
+  .sort-chip:active { cursor: grabbing; }
+  .sort-chip.placed { opacity: 0.4; pointer-events: none; }
+  .sort-chip.in-zone { cursor: pointer; }
+  .sort-chip.sort-correct { background: #f0fff4; color: #276749; border-color: #9ae6b4; }
+  .sort-chip.sort-wrong { background: #fff5f5; color: #c53030; border-color: #fc8181; }
+  .sort-dropped { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+
+  /* Fix game */
+  .fix-options { display: flex; flex-direction: column; gap: 8px; }
+  .fix-opt { padding: 10px 16px; border-radius: 10px; border: 2px solid #e2e8f0; background: white; text-align: left; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+  .fix-opt:hover { border-color: #4299e1; background: #ebf8ff; }
+  .fix-opt.correct { border-color: #48bb78; background: #f0fff4; }
+  .fix-opt.wrong { border-color: #fc8181; background: #fff5f5; }
+  .fix-opt.disabled { pointer-events: none; opacity: 0.7; }
+
+  @media (max-width: 500px) {
+    .sort-zones { flex-direction: column; }
+  }
 </style>
 </head>
 <body>
@@ -51,6 +109,7 @@
   <div class="tab" onclick="show('speaking')">Speaking Phrases</div>
   <div class="tab" onclick="show('writing')">Writing Phrases</div>
   <div class="tab" onclick="show('tips')">Band 6 Tips</div>
+  <div class="tab" onclick="show('practice')">Practice</div>
 </div>
 
 <!-- LINKING WORDS -->
@@ -595,6 +654,16 @@
   </div>
 </div>
 
+<!-- PRACTICE -->
+<div id="practice" class="section">
+  <div class="game-selector">
+    <button class="game-btn active" onclick="switchGame('fill')">Fill the Gap</button>
+    <button class="game-btn" onclick="switchGame('sort')">Formal or Informal?</button>
+    <button class="game-btn" onclick="switchGame('fix')">Fix the Sentence</button>
+  </div>
+  <div class="game-area" id="game-area"></div>
+</div>
+
 <script>
 function show(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -602,6 +671,308 @@ function show(id) {
   document.getElementById(id).classList.add('active');
   event.target.classList.add('active');
 }
+
+/* ============ PRACTICE GAMES ============ */
+const FILL_DATA = [
+  { sentence: "The government should take measures to reduce pollution. ___, they could invest in renewable energy.", answer: "For example", options: ["For example", "However", "Although", "Despite"] },
+  { sentence: "Many people prefer city life. ___, others enjoy the peace of the countryside.", answer: "However", options: ["Therefore", "However", "Furthermore", "As a result"] },
+  { sentence: "___ the bad weather, we decided to go hiking.", answer: "Despite", options: ["Although", "Despite", "Because", "Moreover"] },
+  { sentence: "She studied very hard. ___, she passed the exam with flying colours.", answer: "As a result", options: ["Nevertheless", "On the contrary", "As a result", "In spite of"] },
+  { sentence: "Public transport is efficient. ___, it is also affordable for most people.", answer: "Moreover", options: ["However", "Nevertheless", "Moreover", "Instead"] },
+  { sentence: "If I ___ more time, I would travel around Europe.", answer: "had", options: ["have", "had", "would have", "has"] },
+  { sentence: "The number of tourists has increased ___. This is partly due to cheaper flights.", answer: "significantly", options: ["significantly", "badly", "nicely", "very"] },
+  { sentence: "___ it is true that technology has benefits, it also has drawbacks.", answer: "While", options: ["While", "Because", "Therefore", "So that"] },
+  { sentence: "He ___ to play football every weekend when he was young.", answer: "used", options: ["use", "used", "is used", "was using"] },
+  { sentence: "The issue ___ be solved by investing more in education.", answer: "could", options: ["could", "must to", "can to", "would to"] },
+  { sentence: "___ I'm concerned, this is the best solution available.", answer: "As far as", options: ["As long as", "As far as", "As well as", "As soon as"] },
+  { sentence: "She failed the test ___ having studied all night.", answer: "despite", options: ["although", "despite", "because", "moreover"] },
+];
+
+const SORT_DATA = [
+  { word: "I am writing to enquire about…", cat: "formal" },
+  { word: "Hey! What's up?", cat: "informal" },
+  { word: "I would be grateful if you could…", cat: "formal" },
+  { word: "Yours faithfully,", cat: "formal" },
+  { word: "Take care!", cat: "informal" },
+  { word: "Can you help me out?", cat: "informal" },
+  { word: "I look forward to hearing from you.", cat: "formal" },
+  { word: "Write back soon!", cat: "informal" },
+  { word: "With regard to your request…", cat: "formal" },
+  { word: "Just wanted to let you know…", cat: "informal" },
+  { word: "I hope this letter finds you well.", cat: "formal" },
+  { word: "Catch you later!", cat: "informal" },
+  { word: "I would appreciate it if…", cat: "formal" },
+  { word: "Gonna be there at 5!", cat: "informal" },
+  { word: "Please do not hesitate to contact me.", cat: "formal" },
+  { word: "Cheers!", cat: "informal" },
+];
+
+const FIX_DATA = [
+  { wrong: "If I would have more time, I would study abroad.", right: "If I had more time, I would study abroad.", explain: "2nd conditional: If + past simple, would + infinitive." },
+  { wrong: "Despite she was tired, she continued working.", right: "Despite being tired, she continued working.", explain: "'Despite' is followed by a noun or -ing, not a clause. Use 'Although' for clauses." },
+  { wrong: "The number of students have increased.", right: "The number of students has increased.", explain: "'The number of' takes a singular verb (has)." },
+  { wrong: "In my opinion, I think that education is important.", right: "In my opinion, education is important.", explain: "Don't double up: 'In my opinion' and 'I think' mean the same thing." },
+  { wrong: "He suggested me to go by train.", right: "He suggested going by train.", explain: "'Suggest' is followed by -ing or 'that + subject + should'." },
+  { wrong: "I am used to wake up early.", right: "I am used to waking up early.", explain: "'Be used to' is followed by -ing (gerund), not infinitive." },
+  { wrong: "She told that she was hungry.", right: "She told me that she was hungry.", explain: "'Tell' always needs an object (told me/him/her). 'Say' doesn't." },
+  { wrong: "This problem must to be solved.", right: "This problem must be solved.", explain: "Modal verbs (must, can, should) are followed directly by the base verb — no 'to'." },
+  { wrong: "There is less people in the village now.", right: "There are fewer people in the village now.", explain: "'Fewer' for countable nouns, 'less' for uncountable. Also 'people' is plural → 'are'." },
+  { wrong: "She plays tennis since 2015.", right: "She has played tennis since 2015.", explain: "'Since' requires present perfect, not present simple." },
+];
+
+let currentGame = 'fill';
+let gameState = {};
+
+function switchGame(type) {
+  currentGame = type;
+  document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  startGame();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+function startGame() {
+  const area = document.getElementById('game-area');
+  if (currentGame === 'fill') startFill(area);
+  else if (currentGame === 'sort') startSort(area);
+  else if (currentGame === 'fix') startFix(area);
+}
+
+/* ---- FILL THE GAP ---- */
+function startFill(area) {
+  const questions = shuffle(FILL_DATA).slice(0, 8);
+  gameState = { questions, idx: 0, score: 0 };
+  renderFill(area);
+}
+
+function renderFill(area) {
+  const { questions, idx, score } = gameState;
+  if (idx >= questions.length) {
+    renderFinalScore(area, score, questions.length);
+    return;
+  }
+  const q = questions[idx];
+  const opts = shuffle(q.options);
+  const sentenceHTML = q.sentence.replace('___', '<span class="blank">???</span>');
+  area.innerHTML = `
+    <div class="game-card">
+      <div class="game-progress">
+        <div class="game-progress-bar"><div class="game-progress-fill" style="width:${(idx/questions.length)*100}%"></div></div>
+        <div class="game-progress-text">${idx+1} / ${questions.length}</div>
+      </div>
+      <h3>Choose the correct word to fill the gap:</h3>
+      <div class="game-sentence">${sentenceHTML}</div>
+      <div class="game-options" id="fill-opts">
+        ${opts.map(o => `<button class="game-opt" onclick="checkFill(this, '${o.replace(/'/g, "\\'")}', '${q.answer.replace(/'/g, "\\'")}')">${o}</button>`).join('')}
+      </div>
+      <div class="game-feedback" id="fill-fb"></div>
+      <button class="game-next" id="fill-next" onclick="nextFill()">Next &rarr;</button>
+    </div>`;
+}
+
+function checkFill(btn, chosen, answer) {
+  const opts = document.querySelectorAll('#fill-opts .game-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  const fb = document.getElementById('fill-fb');
+  const blank = document.querySelector('.blank');
+  if (chosen === answer) {
+    btn.classList.add('correct');
+    blank.textContent = answer;
+    fb.textContent = 'Correct! Well done.';
+    fb.className = 'game-feedback show ok';
+    gameState.score++;
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o => { if (o.textContent === answer) o.classList.add('correct'); });
+    blank.textContent = answer;
+    fb.textContent = 'Not quite. The answer is: ' + answer;
+    fb.className = 'game-feedback show ko';
+  }
+  document.getElementById('fill-next').classList.add('show');
+}
+
+function nextFill() {
+  gameState.idx++;
+  renderFill(document.getElementById('game-area'));
+}
+
+/* ---- SORT GAME ---- */
+function startSort(area) {
+  const items = shuffle(SORT_DATA).slice(0, 10);
+  gameState = { items, placed: {formal:[], informal:[]}, remaining: items.map((_,i)=>i), checked: false };
+  renderSort(area);
+}
+
+function renderSort(area) {
+  const { items, placed, remaining, checked } = gameState;
+  area.innerHTML = `
+    <div class="game-card">
+      <h3>Drag each phrase to the correct category:</h3>
+      <div class="sort-items" id="sort-items">
+        ${items.map((it, i) => {
+          const isPlaced = !remaining.includes(i);
+          return `<span class="sort-chip${isPlaced?' placed':''}" draggable="true" ondragstart="dragSort(event,${i})" onclick="tapSort(${i})" data-idx="${i}">${it.word}</span>`;
+        }).join('')}
+      </div>
+      <div class="sort-zones">
+        <div class="sort-zone" id="zone-formal" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropSort(event,'formal')">
+          <h4>Formal</h4>
+          <div class="sort-dropped" id="dropped-formal">
+            ${placed.formal.map(i => `<span class="sort-chip in-zone${checked?(items[i].cat==='formal'?' sort-correct':' sort-wrong'):''}" onclick="removeSort(${i},'formal')">${items[i].word}</span>`).join('')}
+          </div>
+        </div>
+        <div class="sort-zone" id="zone-informal" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropSort(event,'informal')">
+          <h4>Informal</h4>
+          <div class="sort-dropped" id="dropped-informal">
+            ${placed.informal.map(i => `<span class="sort-chip in-zone${checked?(items[i].cat==='informal'?' sort-correct':' sort-wrong'):''}" onclick="removeSort(${i},'informal')">${items[i].word}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div id="sort-actions" style="text-align:center;margin-top:10px;">
+        ${!checked && remaining.length === 0 ? '<button class="game-opt" style="background:#4299e1;color:white;border-color:#4299e1;font-weight:700;" onclick="checkSort()">Check Answers</button>' : ''}
+        ${checked ? '<div id="sort-result"></div><button class="game-restart" onclick="startSort(document.getElementById(\'game-area\'))">Play Again</button>' : ''}
+      </div>
+    </div>`;
+
+  if (checked) {
+    const score = [...placed.formal, ...placed.informal].filter(i => {
+      const cat = placed.formal.includes(i) ? 'formal' : 'informal';
+      return items[i].cat === cat;
+    }).length;
+    document.getElementById('sort-result').innerHTML = `<div style="font-size:1.4rem;font-weight:800;color:#2b6cb0;margin-bottom:8px;">${score} / ${items.length}</div>`;
+  }
+}
+
+let dragIdx = null;
+let tapIdx = null;
+
+function dragSort(e, idx) { dragIdx = idx; e.dataTransfer.setData('text/plain', idx); }
+
+function dropSort(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const idx = dragIdx !== null ? dragIdx : parseInt(e.dataTransfer.getData('text/plain'));
+  placeSort(idx, zone);
+}
+
+function tapSort(idx) {
+  if (gameState.checked) return;
+  if (!gameState.remaining.includes(idx)) return;
+  if (tapIdx === idx) { tapIdx = null; return; }
+  tapIdx = idx;
+  // Show mini prompt: next tap on a zone places it
+  const zones = document.querySelectorAll('.sort-zone');
+  zones.forEach(z => {
+    z.style.cursor = 'pointer';
+    z.onclick = function() {
+      const zone = this.id.replace('zone-', '');
+      placeSort(idx, zone);
+      zones.forEach(zz => { zz.style.cursor = ''; zz.onclick = null; });
+      tapIdx = null;
+    };
+  });
+}
+
+function placeSort(idx, zone) {
+  if (gameState.checked) return;
+  if (!gameState.remaining.includes(idx)) return;
+  gameState.placed[zone].push(idx);
+  gameState.remaining = gameState.remaining.filter(i => i !== idx);
+  renderSort(document.getElementById('game-area'));
+}
+
+function removeSort(idx, zone) {
+  if (gameState.checked) return;
+  gameState.placed[zone] = gameState.placed[zone].filter(i => i !== idx);
+  gameState.remaining.push(idx);
+  renderSort(document.getElementById('game-area'));
+}
+
+function checkSort() {
+  gameState.checked = true;
+  renderSort(document.getElementById('game-area'));
+}
+
+/* ---- FIX THE SENTENCE ---- */
+function startFix(area) {
+  const questions = shuffle(FIX_DATA).slice(0, 6);
+  gameState = { questions, idx: 0, score: 0 };
+  renderFix(area);
+}
+
+function renderFix(area) {
+  const { questions, idx, score } = gameState;
+  if (idx >= questions.length) {
+    renderFinalScore(area, score, questions.length);
+    return;
+  }
+  const q = questions[idx];
+  const choices = shuffle([q.right, q.wrong]);
+  area.innerHTML = `
+    <div class="game-card">
+      <div class="game-progress">
+        <div class="game-progress-bar"><div class="game-progress-fill" style="width:${(idx/questions.length)*100}%"></div></div>
+        <div class="game-progress-text">${idx+1} / ${questions.length}</div>
+      </div>
+      <h3>Which sentence is correct?</h3>
+      <div class="fix-options" id="fix-opts">
+        ${choices.map(c => `<button class="fix-opt" onclick="checkFix(this, ${c===q.right})">${c}</button>`).join('')}
+      </div>
+      <div class="game-feedback" id="fix-fb"></div>
+      <button class="game-next" id="fix-next" onclick="nextFix()">Next &rarr;</button>
+    </div>`;
+}
+
+function checkFix(btn, isCorrect) {
+  const opts = document.querySelectorAll('#fix-opts .fix-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  const fb = document.getElementById('fix-fb');
+  const q = gameState.questions[gameState.idx];
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.innerHTML = 'Correct! ' + q.explain;
+    fb.className = 'game-feedback show ok';
+    gameState.score++;
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o => { if (!o.classList.contains('wrong')) o.classList.add('correct'); });
+    fb.innerHTML = 'Not quite. ' + q.explain;
+    fb.className = 'game-feedback show ko';
+  }
+  document.getElementById('fix-next').classList.add('show');
+}
+
+function nextFix() {
+  gameState.idx++;
+  renderFix(document.getElementById('game-area'));
+}
+
+/* ---- FINAL SCORE ---- */
+function renderFinalScore(area, score, total) {
+  const pct = Math.round((score/total)*100);
+  let msg = pct >= 80 ? 'Excellent work! You\'re ready for Band 6+!' : pct >= 50 ? 'Good effort! Keep practising!' : 'Keep going! Review the cheat sheet and try again.';
+  area.innerHTML = `
+    <div class="game-card game-score-final">
+      <div class="big">${score} / ${total}</div>
+      <div class="msg">${msg}</div>
+      <div style="margin-bottom:12px;">
+        ${'<span style="font-size:1.4rem;">'.repeat(0)}${Array.from({length:total}, (_,i) => i < score ? '<span style="font-size:1.4rem;color:#48bb78;">&#9679;</span>' : '<span style="font-size:1.4rem;color:#e2e8f0;">&#9679;</span>').join(' ')}
+      </div>
+      <button class="game-restart" onclick="startGame()">Play Again</button>
+    </div>`;
+}
+
+// Auto-start first game when Practice tab is shown
+const origShow = show;
+show = function(id) {
+  origShow(id);
+  if (id === 'practice') startGame();
+};
 </script>
 </body>
 </html>
